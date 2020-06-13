@@ -1,0 +1,32 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    username: root
+    password: 12345678
+    url: jdbc:mysql://localhost:3306/test?
+    driver-class-name: com.mysql.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+
+  mail:
+    host: smtp.qq.com
+    username: 1789023580@qq.com
+    password: idqppmytbaggbgee
+    from: 1789023580@qq.com
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true
+
+  mvc:
+    date-format: yyyy-MM-dd
+
+mybatis:
+  type-aliases-package: com.cooper.demo.Mapper
+  mapper-locations: classpath:mybatis/mapper/*.xml
+
+logging:
+  level:
+    com.cooper.demo.Mapper: debug

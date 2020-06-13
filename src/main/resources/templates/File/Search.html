@@ -1,0 +1,333 @@
+<!--声明h5标准-->
+<!DOCTYPE html>
+<!-- saved from url=(0052)http://getbootstrap.com/docs/4.0/examples/dashboard/ -->
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="description" content="">
+		<meta name="author" content="">
+
+		<title>搜索</title>
+		<!-- Bootstrap core CSS -->
+		<link th:href="@{/asserts/css/bootstrap.min.css}" rel="stylesheet">
+
+		<!-- Custom styles for this template -->
+		<link th:href="@{/asserts/css/dashboard.css}" rel="stylesheet">
+
+		<link th:href="@{/webjars/jquery/3.4.1/jquery.js}" rel="stylesheet">
+		<style type="text/css">
+			/* Chart.js */
+			
+			@-webkit-keyframes chartjs-render-animation {
+				from {
+					opacity: 0.99
+				}
+				to {
+					opacity: 1
+				}
+			}
+			
+			@keyframes chartjs-render-animation {
+				from {
+					opacity: 0.99
+				}
+				to {
+					opacity: 1
+				}
+			}
+			
+			.chartjs-render-monitor {
+				-webkit-animation: chartjs-render-animation 0.001s;
+				animation: chartjs-render-animation 0.001s;
+			}
+		</style>
+	</head>
+
+	<body>
+<!--		引入抽取的topbar-->
+<!--	模板名会使用thymeleaf的前后缀进行解析-->
+<!--		<div th:replace="commons/bar::topbar"></div>-->
+		<!--topbar-->
+		<div>
+		<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0" th:fragment="topbar">
+			<a class="navbar-brand col-sm-3 col-md-2 mr-0" href="http://localhost:8080/user/home" style="text-align: center"><h10 sec:authentication="name"/></a>
+			<input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search" onblur="search()" id="search">
+			<ul class="navbar-nav px-3">
+				<li class="nav-item text-nowrap">
+					<a class="nav-link" th:href="@{/logout}">Sign out</a>
+				</li>
+			</ul>
+		</nav>
+		</div>
+
+		<div class="container-fluid">
+			<div class="row">
+
+<!--				引入侧边栏-->
+				<div th:replace="commons/bar::#sidebar(activeUri='/user/file/file_operation')"></div>
+
+				<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+<!--					<h2><a class="btn btn-sm btn-success" th:href="@{/user/file/to_uploadFile_page}">上传文件</a></h2>-->
+					<h2><button onclick="upload()" class="btn btn-sm btn-success">上传文件</button></h2>
+					<div class="table-responsive">
+						<table class="table table-striped table-sm">
+							<thead>
+								<tr>
+									<th>文件名</th>
+									<th>大小</th>
+									<th>修改日期</th>
+									<th>操作</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="file:${File_Info}">
+									<td th:text="${file.getKey()}"></td>
+									<td th:text="${(file.getSize()/1024.0)>1024.0}? ${#numbers.formatDecimal((file.getSize()/1024.0/1024.0), 0, 2)}+'M':${#numbers.formatDecimal((file.getSize()/1024.0), 0, 2)}+'KB'"></td>
+									<td th:text="${file.getLastModified().getYear()+1900}+@{-}+${file.getLastModified().getMonth()+1}+@{-}+${file.getLastModified().getDate()}"></td>
+									<td>
+										<button class="btn btn-sm btn-success" th:onclick="myPreview([[${file.getBucketName()}]],[[${file.getKey()}]])">预览</button>
+										<!--										<a th:href="@{/user/file/download/}+${file.getBucketName()}+@{/}+${file.getKey()}"  class="btn btn-sm btn-success">下载</a>-->
+										<button th:onclick="download_ajax([[${file.getBucketName()}]],[[${file.getKey()}]])" id="download_ajax" class="btn btn-sm btn-success">下载</button>
+<!--										<button th:attr="downloadUri = @{/user/file/download/}+${file.getBucketName()}+@{/}+${file.getKey()}"  class="btn btn-sm btn-success downloadBtn">下载</button>-->
+										<button th:attr="deleteUri = @{/user/file/delete/}+${file.getBucketName()}+@{/}+${file.getKey()}"  class="btn btn-sm btn-danger deleteBtn">删除</button>
+										<button th:id="'t'+${file.getKey()}" th:onclick="copyUrl([[${file.getBucketName()}]],[[${file.getKey()}]])"  class="btn btn-sm btn-success copy" type="button">分享</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</main>
+
+<!--				<form id="downloadForm" method="post">-->
+<!--					<input type="hidden" name="_method" value="download"/>-->
+<!--				</form>-->
+
+				<form id="deleteBucketForm" method="post">
+					<input type="hidden" name="_method" value="delete"/>
+				</form>
+
+				<!-- 上传小窗口 -->
+				<div id="upload" style="border: 1px solid;width: 100%;margin: auto;height: 100%;position: fixed;left: 0px;top: 0px;background: rgb(0,0,0,0.7);overflow: auto;text-align: center;display: none;">
+					<div style="background: white;width: 500px;height: 150px;margin: auto;margin-top: 300px;margin-left:600px;border-radius: 5px;">
+						<div style="height: 150px;border-bottom: 1px solid #CCCCCC;padding-left: 10px">
+							<!-- 框内内容 -->
+							<form action="/user/file/upload" method="post" enctype="multipart/form-data" style="padding-top: 10px;">
+								<!--    这里的multipart/form-data必须使用post提交-->
+								文件:  <input type="file" name="file" multiple = multiple><br>
+								<input  type="submit" value="上传">
+							</form>
+							<span id="uploadInfo"></span><br>
+							<span id="length"></span><br>
+							<progress value="0" max="1" id="upload_bar"></progress>
+<!--							<label th:text="${session.upload_info}" id="upload_info"></label>-->
+<!--							<label id="upload_info"></label>-->
+							<button class="btn btn-sm btn-success" onclick="uploadsc()" style="float: right;width: 20%;height: 40px;line-height: 39px;font-size: 0.8rem;margin-right: 30px;padding-bottom: 10px">取消上传</button>
+						</div>
+					</div>
+				</div>
+				<!-- 上传小窗口end -->
+				<!-- 下载小窗口 -->
+				<div id="download" style="border: 1px solid;width: 100%;margin: auto;height: 100%;position: fixed;left: 0px;top: 0px;background: rgb(0,0,0,0.7);overflow: auto;text-align: center;display: none;">
+					<div style="background: white;width: 500px;height: 110px;margin: auto;margin-top: 300px;margin-left:600px;border-radius: 5px;">
+						<div style="height: 110px;border-bottom: 1px solid #CCCCCC;padding-left: 10px">
+							<!-- 框内内容 -->
+							<form id="downloadForm" method="post" style="padding-top: 10px;">
+								保存文件名称：  <input type="text" name="downloadFileNewName"/><br>
+							</form>
+							<button class="btn btn-sm btn-success" onclick="myDownload()" style="float: left;width: 20%;height: 40px;line-height: 39px;font-size: 0.8rem;margin-right: 30px;padding-bottom: 10px">下载</button>
+							<button class="btn btn-sm btn-success" onclick="downloadsc()" style="float: right;width: 20%;height: 40px;line-height: 39px;font-size: 0.8rem;margin-right: 30px;padding-bottom: 10px">取消下载</button>
+						</div>
+					</div>
+				</div>
+				<!-- 下载小窗口end -->
+
+				<!-- 删除确认框 -->
+				<div id="delete_box" style="border: 1px solid;width: 100%;margin: auto;height: 100%;position: fixed;left: 0px;top: 0px;background: rgb(0,0,0,0.7);overflow: auto;text-align: center;display: none;">
+					<div style="background: white;width: 250px;height: 150px;margin: auto;margin-top: 300px;margin-left:700px;border-radius: 5px;">
+						<div style="height: 110px;border-bottom: 1px solid #CCCCCC;">
+							<!-- 框内内容 -->
+							<div style="font-size: 0.9rem;padding-top: 30px;">您确定要删除该文件吗？</div>
+							<div style="font-size: 0.8rem;margin-top: 15px;">一旦删除将不可恢复！</div>
+						</div>
+						<div style="height: 39px;">
+							<button class="btn btn-sm btn-danger" onclick="getMyFlag()" style="float: left;width: 50%;height: 40px;border-right: 1px solid #CCCCCC;line-height: 39px;font-size: 1rem;">确认</button>
+							<button class="btn btn-sm btn-success" onclick="delesc()" style="float: right;width: 50%;height: 40px;line-height: 39px;font-size: 1rem">取消</button>
+						</div>
+					</div>
+				</div>
+				<!-- 删除确认框end -->
+
+			</div>
+		</div>
+
+		<!-- Bootstrap core JavaScript
+    ================================================== -->
+		<!-- Placed at the end of the document so the pages load faster -->
+		<script type="text/javascript" th:src="@{/asserts/js/jquery-3.2.1.slim.min.js}"></script>
+		<script type="text/javascript" th:src="@{/asserts/js/popper.min.js}"></script>
+		<script type="text/javascript" th:src="@{/asserts/js/bootstrap.min.js}"></script>
+		<script src="/asserts/js/jquery-3.4.1.js" ></script>
+		<script th:src="@{/asserts/js/jquery.cookie.js}"></script>
+		<script src="http://jhyt.oss-cn-shanghai.aliyuncs.com/images/1531367199089_PDFObject.js" type="text/javascript"></script>
+		<script src="/asserts/js/clipboard.js"></script>
+		<!-- Icons -->
+		<script type="text/javascript" th:src="@{/asserts/js/feather.min.js}"></script>
+		<script>
+			feather.replace()
+		</script>
+
+		<!-- Graphs -->
+		<script type="text/javascript" th:src="@{/asserts/js/Chart.min.js}"></script>
+		<script>
+			var ctx = document.getElementById("myChart");
+			var myChart = new Chart(ctx, {
+				type: 'line',
+				data: {
+					labels: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+					datasets: [{
+						data: [15339, 21345, 18483, 24003, 23489, 24092, 12034],
+						lineTension: 0,
+						backgroundColor: 'transparent',
+						borderColor: '#007bff',
+						borderWidth: 4,
+						pointBackgroundColor: '#007bff'
+					}]
+				},
+				options: {
+					scales: {
+						yAxes: [{
+							ticks: {
+								beginAtZero: false
+							}
+						}]
+					},
+					legend: {
+						display: false,
+					}
+				}
+			});
+		</script>
+
+<!--		触发删除弹框-->
+		<script type="text/javascript">
+			function download() {
+				document.getElementById("download").style.display = "block";
+			}
+			function downloadsc() {
+				document.getElementById("download").style.display = "none";
+			}
+			function upload() {
+				document.getElementById("upload").style.display = "block";
+			}
+			function uploadsc() {
+				document.getElementById("upload").style.display = "none";
+			}
+			function delesc(){
+				/* 隐藏 */
+				document.getElementById("delete").style.display="none";
+			}
+			function myDownload() {
+				$("#downloadForm").attr("action",$(".downloadBtn").attr("downloadUri")).submit();
+				return false;
+			}
+			function getMyFlag() {
+				$("#deleteBucketForm").attr("action",$(".deleteBtn").attr("deleteUri")).submit();
+				alert($(".deleteBtn").attr("deleteUri"));
+				return false;
+			}
+		</script>
+
+		<!--下载-->
+		<script>
+			$(".downloadBtn").click(function () {
+				document.getElementById("download").style.display = "block";
+			})
+		</script>
+
+		<script>
+			$(".deleteBtn").click(function () {
+				//删除文件
+				var flag = confirm("您确定要删除吗？");
+				//alert("这里是.deletebtn");
+				//document.getElementById("delete_box").style.display="block";
+				//var flag = $(".confirm_delete").attr("myFlag");
+				if(flag)
+					$("#deleteBucketForm").attr("action",$(this).attr("deleteUri")).submit();
+				return false;
+			});
+		</script>
+
+		<script>
+			function download_ajax(bucketName,fileName) {
+				$.post({
+					async:true,
+					url:"http://localhost:8080/user/file/download",
+					data:{bucketName:bucketName,fileName:fileName},//传送的参数
+					success:function (result) {
+						if(result.toString()=="ok")
+							console.log("下载成功！");
+					}
+				});
+			}
+		</script>
+
+		<script>
+			function search() {
+				var bucketName = $.cookie("bucketName");
+				$.post({
+					async: true,
+					url:"http://localhost:8080/user/file/watch/search",
+					data:{bucketName:bucketName,prefix:$("#search").val()},
+					success:function (result) {
+						window.location.href = "http://localhost:8080/user/file/watch/search/result";
+					}
+				});
+			}
+		</script>
+
+		<script>
+			function myPreview(bucketName,fileName) {
+				$.post({
+					url:"http://localhost:8080/user/file/preview",
+					async:true,
+					data:{bucketName:bucketName,fileName:fileName},
+					success:function (result) {
+						// PDFObject.embed('http://192.168.1.21:1999/hello-2bddbd0ab6564a5bacb7b6f7df40c2ff/test.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20200406T081713Z&X-Amz-SignedHeaders=host&X-Amz-Expires=604799&X-Amz-Credential=7METYYEX1K0DDY3E0ODM%2F20200406%2F%2Fs3%2Faws4_request&X-Amz-Signature=fd79154a06e740d781040aadf146b613abff02a99cfb6943da210b2ac41463ee');
+						PDFObject.embed(result);
+					}
+				})
+			}
+		</script>
+
+		<!--分享链接粘贴  此处有一个小bug  第一次赋值的时候需要点击两次 以后再次点击正常-->
+		<script>
+			function copyUrl(bucketName,fileName) {
+				$.post({
+					url:"http://localhost:8080/user/file/share",
+					async:false,
+					data:{bucketName:bucketName,fileName:fileName},
+					success:function (result) {
+						//这里之所以要前面+'t' 是因为无法识别以数字开头的id
+						var target = document.getElementById('t'+fileName);
+						target.setAttribute("data-clipboard-text",result);
+
+						var clipboard = new ClipboardJS(target);
+						clipboard.on('success',function (e) {
+							alert("复制成功");
+							clipboard.destroy();
+						});
+						clipboard.on('error', function (e) {
+							console.log(e);
+							alert("测试1复制失败！请手动复制");
+							clipboard.destroy();
+						});
+					}
+				});
+			}
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<!-- saved from url=(0052)http://getbootstrap.com/docs/4.0/examples/dashboard/ -->
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="description" content="">
+		<meta name="author" content="">
+
+		<title>存储空间</title>
+		<!-- Bootstrap core CSS -->
+		<link th:href="@{/asserts/css/bootstrap.min.css}" rel="stylesheet">
+
+		<!-- Custom styles for this template -->
+		<link th:href="@{/asserts/css/dashboard.css}" rel="stylesheet">
+
+		<link th:href="@{/webjars/jquery/3.4.1/jquery.js}" rel="stylesheet">
+
+		<script src="/asserts/js/jquery-3.4.1.js" ></script>
+
+		<style type="text/css">
+			/* Chart.js */
+
+			@-webkit-keyframes chartjs-render-animation {
+				from {
+					opacity: 0.99
+				}
+				to {
+					opacity: 1
+				}
+			}
+
+			@keyframes chartjs-render-animation {
+				from {
+					opacity: 0.99
+				}
+				to {
+					opacity: 1
+				}
+			}
+
+			.chartjs-render-monitor {
+				-webkit-animation: chartjs-render-animation 0.001s;
+				animation: chartjs-render-animation 0.001s;
+			}
+		</style>
+	</head>
+
+	<body>
+<!--		引入抽取的topbar-->
+<!--	模板名会使用thymeleaf的前后缀进行解析-->
+		<div th:replace="commons/bar::topbar"></div>
+
+<!--				引入侧边栏-->
+		<div th:replace="commons/bar::#sidebar(activeUri='/user/Storage')"></div>
+
+		<div id="container" style="height: 500px;padding-left: 20%;" class="container-fluid"></div>
+		<script src="https://cdn.bootcss.com/echarts/3.7.1/echarts.min.js"></script>
+		<script>
+			var myChart = echarts.init(document.getElementById('container'));
+			function hrFun(param) {
+				myChart.setOption({
+					title:{
+						text:'存储空间(M)',
+						x:'center',
+						y:'top',
+						textAlign:'center'
+					},
+					tooltip: {
+						trigger: 'item',
+						formatter: "{b}: {c} ({d}%)"
+					},
+					legend: {
+						 orient: 'vertical',
+                         x: 'left',
+                         y: 'bottom',
+                         textStyle: { //图例文字的样式
+                             color: '#0b2b5e',
+                             fontSize: 12
+                         },
+					},
+					series: [{
+						name: '空间使用',
+						type: 'pie',
+						radius: ['50%', '70%'],
+						avoidLabelOverlap: false,
+						data: []
+					}]
+				});
+
+				myChart.showLoading(); //数据加载完之前先显示一段简单的loading动画
+				var names = [];
+				var browser = [];
+				$.post({
+							url: "http://localhost:8080/user/Storage",
+							dataType: "json",
+							success: function (result) {
+								$(result).each(function () {
+									names.push(this.name);
+									browser.push({
+										name: this.name,
+										value: this.value
+									});
+								});
+								myChart.hideLoading();
+								myChart.setOption({
+									legend: {
+										data: names
+									},
+									series: [{
+										data: browser
+									}]
+								});
+							},
+							error: function (errorMsg) {
+								alert("请求图表失败！");
+								myChart.hideLoading();
+							}
+						});
+			}
+			hrFun();
+		</script>
+
+		<div  style="height: 500px;padding-left: 20%;" class="container-fluid">
+			<form class="form-signin" th:action="@{/user/Storage/setStorageSpace}" method="post">
+				<div class="form-group">
+					<label for="StorageSpace" style="margin-left: 80%">扩容(G)</label>
+					<select class="form-control" id="StorageSpace" name="StorageSpace" style="width: 100px;margin-left: 80%">
+						<option >1</option>
+						<option >10</option>
+						<option >100</option>
+						<option >1000</option>
+					</select>
+				</div>
+				<button class="btn btn-sm btn-primary btn-success" type="submit" style="margin-left: 84%" onclick="tip()">扩容</button>
+			</form>
+		</div>
+		<!-- Bootstrap core JavaScript
+    ================================================== -->
+		<!-- Placed at the end of the document so the pages load faster -->
+		<script type="text/javascript" th:src="@{/asserts/js/jquery-3.2.1.slim.min.js}"></script>
+		<script type="text/javascript" th:src="@{/asserts/js/popper.min.js}"></script>
+		<script type="text/javascript" th:src="@{/asserts/js/bootstrap.min.js}"></script>
+		<!-- Icons -->
+		<script type="text/javascript" th:src="@{/asserts/js/feather.min.js}"></script>
+		<script src="/staticfiles/login/js/message.js"></script>
+		<script>
+			feather.replace()
+		</script>
+
+		<script>
+			function msgNotify(type,msg) {
+				$.message({
+					type:type,
+					message:'<div style="color:#333;font-weight:bold;font-size:16px;">'+msg+'<div>' +
+							'<span style="color:lightgrey;font-size:small;">1秒后自动关闭</span>',
+					duration:1000
+				})
+			}
+			function tip() {
+				msgNotify("success","扩容成功")
+			}
+		</script>
+	</body>
+
+</html>

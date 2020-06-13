@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<!-- saved from url=(0052)http://getbootstrap.com/docs/4.0/examples/dashboard/ -->
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="description" content="">
+		<meta name="author" content="">
+
+		<title>添加用户</title>
+		<!-- Bootstrap core CSS -->
+		<link th:href="@{/asserts/css/bootstrap.min.css}" rel="stylesheet">
+
+		<!-- Custom styles for this template -->
+		<link th:href="@{/asserts/css/dashboard.css}" rel="stylesheet">
+
+		<link th:href="@{/asserts/js/jquery-3.2.1.slim.min.js}" rel="stylesheet">
+
+		<style type="text/css">
+			/* Chart.js */
+			
+			@-webkit-keyframes chartjs-render-animation {
+				from {
+					opacity: 0.99
+				}
+				to {
+					opacity: 1
+				}
+			}
+			
+			@keyframes chartjs-render-animation {
+				from {
+					opacity: 0.99
+				}
+				to {
+					opacity: 1
+				}
+			}
+			
+			.chartjs-render-monitor {
+				-webkit-animation: chartjs-render-animation 0.001s;
+				animation: chartjs-render-animation 0.001s;
+			}
+		</style>
+	</head>
+
+	<body>
+<!--		引入抽取的topbar-->
+<!--	模板名会使用thymeleaf的前后缀进行解析-->
+		<div th:replace="commons/bar::topbar"></div>
+
+		<div class="container-fluid">
+			<div class="row">
+
+<!--				引入侧边栏-->
+				<div th:replace="commons/bar::#sidebar(activeUri='/admin/Users_Info')"></div>
+
+				<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+					<form th:action="@{/admin/add_User}" method="post">
+<!--						这里我们修改员工信息需要使用put请求-->
+<!--						这里返回的是一个对象，因此有些被影藏起来了-->
+						<input type="hidden" name="_method" value="put" th:if="${user!=null}"/>
+						<input type="hidden" name="id" th:if="${user!=null}" th:value="${user.id}"/>
+<!--						<input type="hidden" name="active_status" th:if="${user!=null}" th:value="${user.active_status}"/>-->
+
+						<div class="form-group">
+							<label for="username">username</label>
+							<input type="text" class="form-control" id="username" name="username" placeholder="username" th:value="${user!=null}?${user.username}" onblur="checkValid()">
+						</div>
+						<div class="form-group">
+							<label for="password">password</label>
+							<input type="text" class="form-control" id="password" name="password" placeholder="password" th:value="${user!=null}?${user.password}">
+						</div>
+						<div class="form-group">
+							<label for="Email">Email</label>
+							<input type="email" class="form-control" id="Email" name="email" placeholder="name@example.com" th:value="${user!=null}?${user.email}">
+						</div>
+						<div class="form-group">
+							<label for="active_status">active_Status</label>
+							<select class="form-control" id="active_status" name="active_status">
+								<option th:selected="${user!=null}?${user.active_status==0}">0</option>
+								<option th:selected="${user!=null}?${user.active_status==1}">1</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="StorageSpace">StorageSpace</label>
+							<input type="text" class="form-control" id="StorageSpace" name="StorageSpace" placeholder="5242880" th:value="${user!=null}?${user.StorageSpace}">
+						</div>
+						<div class="form-group">
+							<label for="MaxStorageNumber">MaxStorageNumber</label>
+							<input type="text" class="form-control" id="MaxStorageNumber" name="MaxStorageNumber" placeholder="100" th:value="${user!=null}?${user.MaxStorageNumber}">
+						</div>
+						<button class="btn btn-lg btn-primary btn-success" type="submit" th:text="${user!=null?'修改':'添加'}">添加</button>
+					</form>
+				</main>
+			</div>
+		</div>
+
+		<!-- Bootstrap core JavaScript
+    ================================================== -->
+		<!-- Placed at the end of the document so the pages load faster -->
+		<script type="text/javascript" src="asserts/js/jquery-3.2.1.slim.min.js"></script>
+		<script type="text/javascript" src="asserts/js/popper.min.js"></script>
+		<script type="text/javascript" src="asserts/js/bootstrap.min.js"></script>
+
+		<!-- Icons -->
+		<script src="/staticfiles/login/js/message.js"></script>
+		<script src="/asserts/js/jquery-3.4.1.js" ></script>
+		<script>
+			function checkValid() {
+				var checkIsExist  = $.ajax({
+					url:"/api/checkIsExist_Action",
+					type:"post",
+					async:false,
+					data:{
+						username:$('#username').val()
+					},success:function (data) {
+						return data
+					}
+				})['responseJSON'];
+				if (checkIsExist){
+					alert("账号已存在！")
+				} else {
+				}
+			}
+		</script>
+
+	</body>
+
+</html>

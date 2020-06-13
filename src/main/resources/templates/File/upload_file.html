@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>文件操作</title>
+</head>
+<body>
+<form action="/user/file/upload" method="post" enctype="multipart/form-data">
+<!--    这里的multipart/form-data必须使用post提交-->
+    文件夹：<input type="text" id="bucketName" name="bucketName"/><br>
+    文件：<input type="text" id="upload_path" name="upload_path"/><br>
+    文件名称：<input type="text" id="file_name" name="file_name"/><br>
+    文件:<input type="file" name="file" multiple = multiple><br>
+    <input type="submit" value="上传">
+</form>
+</body>
+</html>

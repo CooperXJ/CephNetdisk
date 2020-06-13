@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="description" content="登录页面">
+		<meta name="author" content="薛进">
+		<title>登录</title>
+		<!-- Bootstrap core CSS -->
+		<!--bootstrap在webjars包下面-->
+		<link href="/webjars/bootstrap/4.4.1-1/css/bootstrap.css" rel="stylesheet">
+		<!-- Custom styles for this template -->
+		<link href="asserts/css/signin.css" rel="stylesheet">
+		<!--网页图标-->
+		<link rel="shortcut icon" type="image/x-icon" src="../static/favicon.ico"/>
+		<link rel="bookmark" src="../static/favicon.ico"/>
+	</head>
+
+	<body class="text-center">
+		<form class="form-signin" th:action="@{/UserLogin}" method="post">
+			<img class="mb-4" th:src="@{images/Logo/logo.png}" alt="" width="72" height="72">
+			<h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+			<label class="sr-only">Username</label>
+			<p>
+			<input name="username" type="text" class="form-control" placeholder="Username" required="" autofocus="" id="username" onblur="checkUsername()">
+			</p>
+			<br>
+			<label class="sr-only">Password</label>
+			<input name="password" type="password" class="form-control" placeholder="Password" required="" id="pwd" onblur="checkPassword()">
+			<div class="form-group">
+				<div class="checkbox mb-3 float-left">
+					<label>
+						<input name="remember-me" type="checkbox" value="remember-me"> Remember me
+					</label>
+				</div>
+				<div>
+				<a href="/to_forgetPassword" class="float-right">
+					忘记密码?
+				</a>
+				</div>
+			</div>
+			<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+			<p class="mt-5 mb-3 text-muted">© 2020-2021</p>
+
+			<div class="margin-top20 text-center">
+				Don't have an account? <a href="/to_register">Create One</a>
+			</div>
+			<div class="margin-top20 text-center">
+				<a href=mailto:1789023580@qq.com>联系我们</a>
+			</div>
+		</form>
+
+		<script src="/asserts/js/jquery-3.4.1.js" ></script>
+		<script src="/staticfiles/login/js/message.js"></script>
+	<!--JS-->
+		<script type="text/javascript">
+			// var bodyBgs = [];
+			// bodyBgs[0] = "images/Background/01.jpg";
+			// bodyBgs[1] = "images/Background/02.jpg";
+			// bodyBgs[2] = "images/Background/03.jpg";
+			// bodyBgs[3] = "images/Background/04.jpg";
+			//
+			// var randomBgIndex = Math.round( Math.random() * 3 );
+
+			//输出随机的背景图
+			//document.write('<style>body{background:url(' + bodyBgs[randomBgIndex] + ') no-repeat 50% 0}</style>');
+			document.write('<style>body{background:url("https://unsplash.it/2560/1600?random") no-repeat fixed center 0}</style>');
+		</script>
+
+		<script>
+			function msgNotify(type,msg) {
+				$.message({
+					type:type,
+					message:'<div style="color:#333;font-weight:bold;font-size:16px;">'+msg+'<div>' +
+							'<span style="color:lightgrey;font-size:small;">1秒后自动关闭</span>',
+					duration:1000
+				})
+			}
+
+			function checkUsername() {
+				$.post({
+					url:"http://localhost:8080",
+					data:{username:$("#username").val()},//传送的参数
+					success:function (result) {
+						if(result.toString()=="ok")
+						{
+						}
+						else
+						{
+							msgNotify("error","用户名错误!")
+						}
+					}
+				})
+			}
+			function checkPassword() {
+				$.post({
+					url:"http://localhost:8080/checkPassword",
+					data:{username:$("#username").val(),
+							password:$("#pwd").val()},//传送的参数
+					success:function (result) {
+						if(result)
+						{
+						}
+						else
+						{
+							msgNotify("error","密码错误!")
+						}
+					}
+				})
+			}
+		</script>
+	</body>
+
+</html>

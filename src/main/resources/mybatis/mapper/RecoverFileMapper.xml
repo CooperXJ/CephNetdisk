@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cooper.demo.Mapper.RecoverFileMapper">
+    <select id="getDeletedFileList" resultType="com.cooper.demo.Bean.RecoverFile">
+         SELECT * FROM file_recover WHERE (username=#{username})
+    </select>
+    <insert id="InsertDeleteInfo" parameterType="com.cooper.demo.Bean.RecoverFile">
+        INSERT INTO file_recover(username,fileName,bucketName,ctime)
+        VALUE(#{username},#{fileName},#{bucketName},#{ctime})
+    </insert>
+    <delete id="deleteFiles">
+        delete from file_recover where (username = #{username} AND fileName=#{fileName} AND bucketName=#{bucketName})
+    </delete>
+    <delete id="deleteFilesAuto">
+        delete from file_recover where (username = #{username} AND fileName=#{fileName})
+    </delete>
+</mapper>
+

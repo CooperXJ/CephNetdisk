@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<!-- saved from url=(0052)http://getbootstrap.com/docs/4.0/examples/dashboard/ -->
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="description" content="">
+		<meta name="author" content="">
+
+		<title>用户空间</title>
+		<!-- Bootstrap core CSS -->
+		<link th:href="@{/asserts/css/bootstrap.min.css}" rel="stylesheet">
+
+		<!-- Custom styles for this template -->
+		<link th:href="@{/asserts/css/dashboard.css}" rel="stylesheet">
+
+		<link th:href="@{/asserts/js/jquery-3.2.1.slim.min.js}" rel="stylesheet">
+		<script src="/asserts/js/jquery-3.4.1.js" ></script>
+		<style type="text/css">
+			/* Chart.js */
+			
+			@-webkit-keyframes chartjs-render-animation {
+				from {
+					opacity: 0.99
+				}
+				to {
+					opacity: 1
+				}
+			}
+			
+			@keyframes chartjs-render-animation {
+				from {
+					opacity: 0.99
+				}
+				to {
+					opacity: 1
+				}
+			}
+			
+			.chartjs-render-monitor {
+				-webkit-animation: chartjs-render-animation 0.001s;
+				animation: chartjs-render-animation 0.001s;
+			}
+		</style>
+	</head>
+
+	<body>
+<!--		引入抽取的topbar-->
+<!--	模板名会使用thymeleaf的前后缀进行解析-->
+		<div th:replace="commons/bar::topbar"></div>
+
+		<div class="container-fluid">
+			<div class="row">
+
+<!--				引入侧边栏-->
+				<div th:replace="commons/bar::#sidebar(activeUri='/user/home')"></div>
+
+				<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+					<form th:action="@{/user/change}" method="get">
+<!--						这里我们修改员工信息需要使用put请求-->
+
+						<input type="hidden" name="_method" value="put" th:if="${user!=null}"/>
+						<input type="hidden" name="id" th:if="${user!=null}" th:value="${user.id}"/>
+
+						<div class="form-group">
+							<label for="header_img">头像</label>
+							<input type="file" style="display: none" id="header_change" name="imgSrc">
+							<img id="header_img" class="form-control" name="head_img" th:src="${user!=null}?${user.header_img}" onclick="{$('#header_change').click()}" style="width: 80px;height: 80px;border-radius:5px"/>
+						</div>
+						<div class="form-group">
+							<label for="username">username</label>
+							<input type="text" class="form-control" id="username" name="username" placeholder="username" th:value="${user!=null}?${user.username}" onblur="checkValid()">
+						</div>
+						<div class="form-group">
+							<label for="nickname">nickname</label>
+							<input type="text" class="form-control" id="nickname" name="nickname" placeholder="nickname" th:value="${user!=null}?${user.nick_name}">
+						</div>
+						<div class="form-group">
+							<label for="password">password</label>
+							<input type="text" class="form-control" id="password" name="password" placeholder="password" th:value="${user!=null}?${user.password}">
+						</div>
+						<div class="form-group">
+							<label for="Email">Email</label>
+							<input type="email" class="form-control" id="Email" name="email" placeholder="name@example.com" th:value="${user!=null}?${user.email}">
+						</div>
+						<button class="btn btn-lg btn-primary btn-success" type="submit">修改</button>
+					</form>
+				</main>
+			</div>
+		</div>
+
+		<!-- Bootstrap core JavaScript
+    ================================================== -->
+		<!-- Placed at the end of the document so the pages load faster -->
+		<script type="text/javascript" src="asserts/js/jquery-3.2.1.slim.min.js"></script>
+		<script type="text/javascript" src="asserts/js/popper.min.js"></script>
+		<script type="text/javascript" src="asserts/js/bootstrap.min.js"></script>
+
+		<!-- Icons -->
+		<script type="text/javascript" src="asserts/js/feather.min.js"></script>
+		<script src="/staticfiles/login/js/message.js"></script>
+		<script>
+			feather.replace()
+			function msgNotify(type,msg) {
+				$.message({
+					type:type,
+					message:'<div style="color:#333;font-weight:bold;font-size:16px;">'+msg+'<div>' +
+							'<span style="color:lightgrey;font-size:small;">1秒后自动关闭</span>',
+					duration:1000
+				})
+			}
+
+			function checkValid() {
+				var checkIsExist  = $.ajax({
+					url:"/api/checkIsExist_Action",
+					type:"post",
+					async:false,
+					data:{
+						username:$('#username').val()
+					},success:function (data) {
+						return data
+					}
+				})['responseJSON'];
+				if (checkIsExist){
+					msgNotify("error","账号已存在,请换一个账号!")
+				} else {
+				}
+			}
+		</script>
+
+
+	</body>
+
+</html>

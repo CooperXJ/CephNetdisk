@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<!-- saved from url=(0052)http://getbootstrap.com/docs/4.0/examples/dashboard/ -->
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="description" content="">
+		<meta name="author" content="">
+
+		<title>文件夹列表</title>
+		<!-- Bootstrap core CSS -->
+		<link th:href="@{/asserts/css/bootstrap.min.css}" rel="stylesheet">
+
+		<!-- Custom styles for this template -->
+		<link th:href="@{/asserts/css/dashboard.css}" rel="stylesheet">
+
+		<link th:href="@{/webjars/jquery/3.4.1/jquery.js}" rel="stylesheet">
+	</head>
+
+	<body>
+<!--		引入抽取的topbar-->
+<!--	模板名会使用thymeleaf的前后缀进行解析-->
+		<div th:replace="commons/bar::topbar"></div>
+
+		<div class="container-fluid">
+			<div class="row">
+
+<!--				引入侧边栏-->
+				<div th:replace="commons/bar::#sidebar(activeUri='/user/file/file_operation')"></div>
+
+				<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+
+					<div style="height: 39px;margin-right: 950px">
+<!--						<h2><a style="float: left" class="btn btn-sm btn-success" th:href="@{/user/file/to_createNewFolder_page}">新建文件夹</a></h2>-->
+						<h2><button id="createFolder" style="float: left" class="btn btn-sm btn-success">新建文件夹</button></h2>
+					</div>
+
+					<div class="table-responsive">
+						<table class="table table-striped table-sm">
+							<thead>
+								<tr>
+									<th>文件夹</th>
+									<th>创建日期</th>
+									<th>查看</th>
+									<th>操作</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="bucket:${Bucket_Info}">
+									<td id="folderName" th:text="${bucket.getMyBucketName()}"></td>
+									<td th:text="${bucket.getCreateDate().year+1900}+@{-}+${bucket.getCreateDate().getMonth()+1}+@{-}+${bucket.getCreateDate().getDate()}"></td>
+									<td><a th:href="@{/user/file/watch/}+${bucket.getMyBucketFullName()}"  class="btn btn-sm btn-success">进入</a></td>
+									<td>
+										<button th:attr="deleteUri = @{/user/file/delete/}+${bucket.getMyBucketFullName()}"  class="btn btn-sm btn-danger deleteBtn">删除</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</main>
+
+				<form id="deleteBucketForm" method="post">
+					<input type="hidden" name="_method" value="delete"/>
+				</form>
+
+			</div>
+		</div>
+
+		<!-- Bootstrap core JavaScript
+    ================================================== -->
+		<!-- Placed at the end of the document so the pages load faster -->
+		<script type="text/javascript" th:src="@{/asserts/js/jquery-3.2.1.slim.min.js}"></script>
+		<script type="text/javascript" th:src="@{/asserts/js/popper.min.js}"></script>
+		<script type="text/javascript" th:src="@{/asserts/js/bootstrap.min.js}"></script>
+		<script th:src="@{/staticfiles/layui/layer/layer.js}"></script>
+		<script th:src="@{/staticfiles/layui/layui.js}"></script>
+		<script src="/asserts/js/jquery-3.4.1.js" ></script>
+		<script src="/staticfiles/jquery-3.1.0.min.js"></script>
+		<script src="/staticfiles/slideCheck/slideCheck.js"></script>
+		<script src="/staticfiles/login/js/my-login.js"></script>
+		<script src="/staticfiles/login/js/message.js"></script>
+		<script src="/staticfiles/jquery.cookie.js"></script>
+		<!-- Icons -->
+		<script type="text/javascript" th:src="@{/asserts/js/feather.min.js}"></script>
+		<script>
+			feather.replace()
+		</script>
+
+<!--		<script type="text/javascript">-->
+<!--			window.onload = function () {-->
+<!--				var folderName = $();-->
+<!--				var name = folderName.innerText;-->
+<!--				var length = name.length - 33;-->
+<!--				name = name.substr(0,length);-->
+<!--				folderName.innerText = name;-->
+<!--				console(folderName);-->
+<!--			}-->
+<!--		</script>-->
+
+		<script type="text/javascript">
+			function msgNotify(type,msg) {
+				$.message({
+					type:type,
+					message:'<div style="color:#333;font-weight:bold;font-size:16px;">'+msg+'<div>' +
+							'<span style="color:lightgrey;font-size:small;">1秒后自动关闭</span>',
+					duration:1000
+				})
+			}
+
+			$(".deleteBtn").click(function () {
+				//删除文件夹的信息
+				var flag = confirm("您确定要删除吗？");
+				if(flag)
+					$("#deleteBucketForm").attr("action",$(this).attr("deleteUri")).submit();
+				return false;
+			});
+			$('#createFolder').click(function () {
+				layer.open({
+					type: 1,
+					title: '新建文件夹',
+					area: ['400px', '100px'],
+					content: '<div class="layui-input-inline float-left" style="margin-left: 32%;margin-top: 20px">\n' +
+							'<input id="key" type="text" placeholder="输入新建文件夹名称" class="layui-input" style="height: 30px;">\n' +
+							'</div><button onclick="createNewFolder()" type="button" class="btn-sm btn-success" style="margin-top: 20px;margin-left: 5px">创建</button>'
+				});
+			});
+
+			function createNewFolder() {
+				$.post({
+					url:"http://localhost:8080/user/file/createNewFolder",
+					data:{folderName:$("#key").val()},
+					success:function (result) {
+						if(result)
+						{
+							msgNotify("success","创建成功!");
+							setTimeout(function () {
+								window.location.href="http://localhost:8080/user/file/file_operation";
+							},500)
+						}
+						else
+						{
+							msgNotify("error","文件名重复!");
+						}
+					},error:function () {
+						msgNotify("error","服务器错误，创建文件夹失败!")
+					}
+				})
+			}
+		</script>
+
+
+	</body>
+
+</html>
