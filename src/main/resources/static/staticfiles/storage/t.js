@@ -1,5 +1,6 @@
 var cred = {
-
+    SecretKey : "NafdNtAE4g4FD1bx5ze1A4j9RVKuGOIy",//"Z37wVqGTSH2WljncGj3CByUYQ8bSHsDJ",
+    SecretId : "AKIDZx5ybzd0e3C5pNfkZBZliPq1xd8XIjTy"//"AKID86wZYH4PLZXIuGQWyC9qa6MLeR0JqVQ5"
 };
 var Bucket = 'bucket-1257832629';//'bucket-1259623384';
 var Region =  'ap-chengdu';//'ap-chengdu';
