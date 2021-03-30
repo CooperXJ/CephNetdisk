@@ -17,7 +17,7 @@
         SELECT temp1.*,(case when c is null then 0 else c end) AS notread_num FROM
           (SELECT friends.friend_id,friends.ctime,nick_name AS friend_nick_name,header_img AS friend_header_img
             FROM friends LEFT JOIN user ON friend_id=username
-            WHERE user_id=#{user_id} AND isaccept=1) AS temp1 LEFT JOIN
+            WHERE user_id=#{user_id} AND is_accept=1) AS temp1 LEFT JOIN
             (SELECT sender_id,count(*) AS c FROM chat_records WHERE is_read=0 AND receiver_id=#{user_id}
             group by sender_id) AS temp2
             ON temp1.friend_id=temp2.sender_id
@@ -27,14 +27,14 @@
              INSERT INTO friends(user_id,friend_id,ctime,reason,type) VALUE(#{user_id},#{friend_id},#{ctime},#{reason},#{type})
         </if>
         <if test="type==1">
-             INSERT INTO friends(user_id,friend_id,ctime,isaccept,reason,type) VALUE(#{user_id},#{friend_id},#{ctime},1,#{reason},#{type})
+             INSERT INTO friends(user_id,friend_id,ctime,is_accept,reason,type) VALUE(#{user_id},#{friend_id},#{ctime},1,#{reason},#{type})
         </if>
     </insert>
     <insert id="acceptFriend" parameterType="Map">
-        UPDATE friends SET isaccept = 1 WHERE user_id = #{user_id} AND friend_id=#{friend_id} AND type=0
+        UPDATE friends SET is_accept = 1 WHERE user_id = #{user_id} AND friend_id=#{friend_id} AND type=0
     </insert>
     <select id="getApplyFriend" resultType="com.cooper.demo.Bean.Friend">
-        SELECT user_id,friends.ctime,reason,isaccept,header_img AS user_header_img,nick_name AS user_nick_name FROM friends
+        SELECT user_id,friends.ctime,reason,is_accept,header_img AS user_header_img,nick_name AS user_nick_name FROM friends
         LEFT JOIN user ON username=user_id
         WHERE friend_id=#{friend_id} AND type=0
     </select>

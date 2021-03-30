@@ -53,7 +53,7 @@
 		<!--topbar-->
 		<div>
 		<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0" th:fragment="topbar">
-			<a class="navbar-brand col-sm-3 col-md-2 mr-0" href="http://localhost:8080/user/home" style="text-align: center"><h10 sec:authentication="name"/></a>
+			<a class="navbar-brand col-sm-3 col-md-2 mr-0" href="http://172.23.27.118:8080/user/home" style="text-align: center"><h10 sec:authentication="name"/></a>
 			<input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search" onblur="search()" id="search">
 			<ul class="navbar-nav px-3">
 				<li class="nav-item text-nowrap">
@@ -264,7 +264,7 @@
 			function download_ajax(bucketName,fileName) {
 				$.post({
 					async:true,
-					url:"http://localhost:8080/user/file/download",
+					url:"http://172.23.27.118:8080/user/file/download",
 					data:{bucketName:bucketName,fileName:fileName},//传送的参数
 					success:function (result) {
 						if(result.toString()=="ok")
@@ -279,10 +279,10 @@
 				var bucketName = $.cookie("bucketName");
 				$.post({
 					async: true,
-					url:"http://localhost:8080/user/file/watch/search",
+					url:"http://172.23.27.118:8080/user/file/watch/search",
 					data:{bucketName:bucketName,prefix:$("#search").val()},
 					success:function (result) {
-						window.location.href = "http://localhost:8080/user/file/watch/search/result";
+						window.location.href = "http://172.23.27.118:8080/user/file/watch/search/result";
 					}
 				});
 			}
@@ -291,7 +291,7 @@
 		<script>
 			function myPreview(bucketName,fileName) {
 				$.post({
-					url:"http://localhost:8080/user/file/preview",
+					url:"http://172.23.27.118:8080/user/file/preview",
 					async:true,
 					data:{bucketName:bucketName,fileName:fileName},
 					success:function (result) {
@@ -306,7 +306,7 @@
 		<script>
 			function copyUrl(bucketName,fileName) {
 				$.post({
-					url:"http://localhost:8080/user/file/share",
+					url:"http://172.23.27.118:8080/user/file/share",
 					async:false,
 					data:{bucketName:bucketName,fileName:fileName},
 					success:function (result) {

@@ -8,6 +8,7 @@ import com.cooper.demo.service.S3.S3Admin;
 import com.cooper.demo.service.S3.S3ServiceImpl;
 import com.cooper.demo.service.User.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -32,9 +33,13 @@ public class AdminController {
     @Autowired
     S3ServiceImpl s3Service;
 
-    private static final String accessKey = "98SRU6JLWGSPCLZ9UVR4";
-    private static final String secretKey = "cMI813ADNAPaSQSw0spbEgv3vIDdilPFsLn5MCFe";
-    private static final String adminEndpoint = "http://192.168.43.112:1999/admin";
+    @Value("${ceph.ak}")
+    private  String accessKey;
+    @Value("${ceph.sk}")
+    private  String secretKey;
+    @Value("${ceph.endpoint}")
+    private  String adminEndpoint;
+
 
     //查询所有的用户列表
     @GetMapping("Users_Info")
@@ -75,7 +80,7 @@ public class AdminController {
             AmazonS3 s3 = s3Service.getS3Client(user.getAccess_key(),user.getSecret_key());
             Bucket recover = s3Service.createBucket(s3,"recover");
 
-            RgwAdmin rgwAdmin = new RgwAdminBuilder().accessKey(accessKey).secretKey(secretKey).endpoint(adminEndpoint)
+            RgwAdmin rgwAdmin = new RgwAdminBuilder().accessKey(accessKey).secretKey(secretKey).endpoint(adminEndpoint+"/admin")
                     .build();
 
             rgwAdmin.setIndividualBucketQuota(username,recover.getName(),100,1024*1024*1);

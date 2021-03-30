@@ -1,11 +1,17 @@
 package com.cooper.demo;
 
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.Bucket;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
-import com.cooper.demo.Bean.User;
+import com.cooper.demo.Bean.FileRecover;
+import com.cooper.demo.service.File.FileService;
 import com.cooper.demo.service.S3.S3ServiceImpl;
 import com.cooper.demo.service.User.UserServiceImpl;
 import net.sf.json.JSONArray;
@@ -15,6 +21,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.tomcat.util.http.fileupload.disk.DiskFileItemFactory;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.twonote.rgwadmin4j.RgwAdmin;
 import org.twonote.rgwadmin4j.RgwAdminBuilder;
 
@@ -29,7 +36,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-//@SpringBootTest
+@SpringBootTest
 public class S3Test {
 
     String input_path = "/Users/xuejin/Desktop/S3/1.rtf";
@@ -38,6 +45,8 @@ public class S3Test {
 
     @Autowired
     private UserServiceImpl userService;
+    @Autowired
+    private FileService fileService;
 
     public static void main(String[] args){
 
@@ -417,8 +426,18 @@ public class S3Test {
     @Test
     public void test_1()
     {
+        List<FileRecover> list = fileService.getDeleteFileList("Xiaoming");
+        list.forEach(System.out::println);
+    }
 
-        User user = userService.getUserByName("薛进");
-        System.out.println(user);
+    @Test
+    public void  testCreateBucket(){
+        AWSCredentials credentials = new BasicAWSCredentials("E8LH4Q64DSFHDAAM3JQN", "SNWENXYMywYBJzbgJw7DLgdPaziDO7fBWHo8nAmZ");
+        AmazonS3 s3 = AmazonS3ClientBuilder.standard()
+                .withCredentials(new AWSStaticCredentialsProvider(credentials))
+                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("https://cephinside.un-net.com",""))
+                .withPathStyleAccessEnabled(true)
+                .build();
+        s3.createBucket("recover-123454231342323");
     }
 }

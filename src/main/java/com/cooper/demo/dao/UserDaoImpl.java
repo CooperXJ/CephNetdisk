@@ -24,7 +24,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void insertUser(User user) {
-        String sql = "insert into test.user (id,username,password,email,active_status,active_code,access_key,secret_key,storage_space,max_storage_number,nick_name,recoverBucket) values(?,?,?,?,?,?,?,?,?,?,?,?)";
+        String sql = "insert into netdisk.user (id,username,password,email,active_status,active_code,access_key,secret_key,storage_space,max_storage_number,nick_name,recover_bucket) values(?,?,?,?,?,?,?,?,?,?,?,?)";
         jdbcTemplate.update(sql,user.getId(),user.getUsername(),user.getPassword(),user.getEmail(),user.getActive_status(),user.getActiveCode(),user.getAccess_key(),user.getSecret_key(),user.getStorageSpace(),user.getMaxStorageNumber(),user.getNick_name(),user.getRecoverBucket());
     }
 
@@ -32,7 +32,7 @@ public class UserDaoImpl implements UserDao {
     public User getUserByName(String username) {
         QueryRunner queryRunner = new QueryRunner();
 
-        String sql = "select * from test.user where username = ?";
+        String sql = "select * from netdisk.user where username = ?";
         User user = new User();
         jdbcTemplate.query(sql, new Object[]{username}, new RowCallbackHandler() {
             @Override
@@ -58,7 +58,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     //激活后更新用户信息(code设为null state设为1表示已经激活)
     public void activeUser(User user) {
-        String sql = "update test.user set active_status=?,active_code=? where id=?";
+        String sql = "update netdisk.user set active_status=?,active_code=? where id=?";
         Object[] params = {user.getActive_status(), user.getActiveCode(), user.getId()};
         jdbcTemplate.update(sql,params);
     }
@@ -72,7 +72,7 @@ public class UserDaoImpl implements UserDao {
     public User selectUserByActiveCode(String activeCode) {
         QueryRunner queryRunner = new QueryRunner();
 
-        String sql = "select * from test.user where active_code=?";
+        String sql = "select * from netdisk.user where active_code=?";
         User user = new User();
         jdbcTemplate.query(sql, new Object[]{activeCode}, new RowCallbackHandler() {
             @Override
@@ -92,7 +92,7 @@ public class UserDaoImpl implements UserDao {
     public User findUserByEmail(String email) {
         QueryRunner queryRunner = new QueryRunner();
 
-        String sql = "select * from test.user where email=?";
+        String sql = "select * from netdisk.user where email=?";
         User user= new User();
 
         jdbcTemplate.query(sql, new Object[]{email}, new RowCallbackHandler(){
@@ -115,14 +115,14 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void updatePassword(User user) {
-        String sql = "update test.user set password=? where id=?";
+        String sql = "update netdisk.user set password=? where id=?";
         Object[] params = {user.getPassword(), user.getId()};
         jdbcTemplate.update(sql,params);
     }
 
     @Override
     public void updateSecurity(User user) {
-        String sql = "update test.user set security_code=? where id=?";
+        String sql = "update netdisk.user set security_code=? where id=?";
         Object[] params = {user.getSecurityCode(), user.getId()};
         jdbcTemplate.update(sql,params);
     }
@@ -131,7 +131,7 @@ public class UserDaoImpl implements UserDao {
     public boolean CheckUserName(String username) {
         QueryRunner queryRunner = new QueryRunner();
 
-        String sql = "select ifnull((select id  from test.user where username=? limit 1 ), 0)";
+        String sql = "select ifnull((select id  from netdisk.user where username=? limit 1 ), 0)";
 
         int count = jdbcTemplate.queryForObject(sql, new Object[]{username}, Integer.class);
         if(count!=0)
@@ -144,7 +144,7 @@ public class UserDaoImpl implements UserDao {
     public List<User> getAllUser() {
         QueryRunner queryRunner = new QueryRunner();
 
-        String sql = "select * from test.user ";
+        String sql = "select * from netdisk.user ";
 
         List<User> UserList = jdbcTemplate.query(sql,new MyRowMapper());
         return UserList;
@@ -152,33 +152,33 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void updateUserInfo(User user) {
-        String sql = "update test.user set username=? , password=?, email=? , active_status=? ,storage_space=?,max_storage_number=? where id=?";
+        String sql = "update netdisk.user set username=? , password=?, email=? , active_status=? ,storage_space=?,max_storage_number=? where id=?";
         jdbcTemplate.update(sql,user.getUsername(),user.getPassword(),user.getEmail(),user.getActive_status(),user.getStorageSpace(),user.getMaxStorageNumber(),user.getId());
     }
 
     @Override
     public void deleteUser(String username) {
-        String sql = "DELETE FROM test.user WHERE username=?";
+        String sql = "DELETE FROM netdisk.user WHERE username=?";
         jdbcTemplate.update(sql,username);
     }
 
     @Override
     public void setStorageSpace(User user,Integer space) {
-        String sql = "update test.user set storage_space=? where id=?";
+        String sql = "update netdisk.user set storage_space=? where id=?";
         Object[] params = {space, user.getId()};
         jdbcTemplate.update(sql,params);
     }
 
     @Override
     public void setMaxStorageNumber(User user, Integer number) {
-        String sql = "update test.user set storage_space=? where id=?";
+        String sql = "update netdisk.user set storage_space=? where id=?";
         Object[] params = {number, user.getId()};
         jdbcTemplate.update(sql,params);
     }
 
     @Override
     public void updateUserInfoByself(User user) {
-        String sql = "update test.user set username=? , password=?, email=?, header_img=?,nick_name = ? where id=?";
+        String sql = "update netdisk.user set username=? , password=?, email=?, header_img=?,nick_name = ? where id=?";
         jdbcTemplate.update(sql,user.getUsername(),user.getPassword(),user.getEmail(),user.getHeader_img(),user.getNick_name(),user.getId());
     }
 
@@ -197,7 +197,7 @@ public class UserDaoImpl implements UserDao {
             user.setActive_status(resultSet.getInt("active_status"));
             user.setAccess_key(resultSet.getString("access_key"));
             user.setSecret_key(resultSet.getString("secret_key"));
-            user.setRecoverBucket(resultSet.getString("recoverBucket"));
+            user.setRecoverBucket(resultSet.getString("recover_bucket"));
             return user;
         }
     }

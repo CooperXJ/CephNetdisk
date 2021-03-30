@@ -11,6 +11,7 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.*;
 import com.cooper.demo.common.IDUtils;
 import org.apache.commons.fileupload.FileItem;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -23,10 +24,9 @@ import java.util.List;
 
 @Service
 public class S3ServiceImpl implements S3Service {
-    private static String AWS_ACCESS_KEY;// "AHT6X1TRELI8YX3D49SU"; //LFK41Q7YINIER00XVTEW
-    private static String AWS_SECRET_KEY; // "h5cuqvoGCJr2zdXWMoxa7tw4UyAVUrMQZRxFMkT7";//123
-    //private static final String bucketName = "Aaa";
-    private static final String ENDPOINT = "http://192.168.43.112:1999";//此处端口进行了映射
+
+    @Value("${ceph.endpoint}")
+    private String ENDPOINT ;//此处端口进行了映射
 
 //    private static AmazonS3 s3Client;
 
@@ -123,21 +123,13 @@ public class S3ServiceImpl implements S3Service {
         //这里必须是小写否则会出现错误   并且名称有规范 具体参考：https://www.crifan.com/aws_s3_bucket_naming_rule/
         //名称需要唯一
         bucketName = bucketName.toLowerCase()+"-"+IDUtils.getUUID();
-
-
-        Bucket bucket=null;
-
-        bucket=s3Client.createBucket(bucketName);
-
-
+        Bucket bucket=s3Client.createBucket(bucketName);
         return  bucket;
     }
 
     @Override
     public List<Bucket> getBuckets(AmazonS3 s3Client) {
-
             List<Bucket> buckets_List = s3Client.listBuckets();
-
             return buckets_List;
     }
 
@@ -272,7 +264,6 @@ public class S3ServiceImpl implements S3Service {
         {
             name.append(bucket_name[i]);
         }
-
         return name.reverse().toString();
     }
 
@@ -303,7 +294,6 @@ public class S3ServiceImpl implements S3Service {
         {
             name.append(bucket_name[i]);
         }
-
         return name.reverse().toString();
     }
 }

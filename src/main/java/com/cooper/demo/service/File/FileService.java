@@ -1,37 +1,48 @@
 package com.cooper.demo.service.File;
 
-import com.cooper.demo.Bean.RecoverFile;
-import com.cooper.demo.Mapper.RecoverFileMapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.cooper.demo.Bean.FileRecover;
+import com.cooper.demo.Mapper.FileRecoverMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Queue;
 
 @Service
 public class FileService {
     @Autowired
-    RecoverFileMapper recoverFileMapper;
+    FileRecoverMapper fileRecoverMapper;
 
     //获取删除的文件列表
-    public List<RecoverFile> getDeleteFileList(String username)
+    public List<FileRecover> getDeleteFileList(String username)
     {
-        return recoverFileMapper.getDeletedFileList(username);
+        QueryWrapper wrapper = new QueryWrapper();
+        wrapper.eq("username",username);
+        return fileRecoverMapper.selectList(wrapper);
     }
 
     //插入删除文件信息
-    public void InsertSqlHistory(RecoverFile file)
+    public void InsertSqlHistory(FileRecover file)
     {
-        recoverFileMapper.InsertDeleteInfo(file);
+        fileRecoverMapper.insert(file);
     }
 
     //删除Sql中的文件删除记录
     public void deleteSqlHistory(String username,String fileName,String bucketName)
     {
-        recoverFileMapper.deleteFiles(username, fileName,bucketName);
+        QueryWrapper wrapper = new QueryWrapper();
+        wrapper.eq("username",username);
+        wrapper.eq("file_name",fileName);
+        wrapper.eq("bucket_name",bucketName);
+        fileRecoverMapper.delete(wrapper);
     }
 
     public void deleteFilesAuto(String username,String fileName)
     {
-        recoverFileMapper.deleteFilesAuto(username, fileName);
+        QueryWrapper wrapper = new QueryWrapper();
+        wrapper.eq("username",username);
+        wrapper.eq("file_name",fileName);
+        fileRecoverMapper.delete(wrapper);
     }
 }

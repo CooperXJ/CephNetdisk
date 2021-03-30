@@ -41,15 +41,17 @@ import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 
 //import Decoder.BASE64Encoder;
-import org.apache.commons.codec.binary.*;;
+import org.apache.commons.codec.binary.*;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;;
 
 public class Authentication {
 
     private static final String UTF8_CHARSET = "UTF-8";
     private static final String HMAC_SHA1_ALGORITHM = "HmacSHA1";
-    public String endpoint = "http://192.168.43.112:1999";
-    public String awsAccessKeyId;
-    public String awsSecretKey;
+    public String endpoint  = "http://172.23.27.119:7480";
+    public String awsAccessKeyId = "U6DVKQNYCPHCIIP0XZFJ";
+    public String awsSecretKey = "A32aqcbXEECBtfxL2UqqBoMs2zyJJBMnRpG0gj7i";
     public String DEL_METHOD = "DELETE";
     public String PUT_METHOD = "PUT";
     public String HEAD_METHOD = "HEAD";//http head 请求资源的头部信息获取文件大小信息  无响应体

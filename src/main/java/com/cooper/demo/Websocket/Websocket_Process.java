@@ -1,7 +1,6 @@
 package com.cooper.demo.Websocket;
 
 import com.alibaba.fastjson.JSONObject;
-import com.amazonaws.services.xray.model.Http;
 import com.cooper.demo.Bean.UploadSmallObject;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;

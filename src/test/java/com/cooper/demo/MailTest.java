@@ -1,5 +1,7 @@
 package com.cooper.demo;
 
+import com.cooper.demo.Bean.FileRecover;
+import com.cooper.demo.service.File.FileService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.mail.internet.MimeMessage;
 import java.io.File;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -18,6 +21,8 @@ public class MailTest {
     @Autowired
     JavaMailSenderImpl mailSender;
 
+    @Autowired
+    FileService service;
     //以下使用两种不同的方法测试邮件的发送
 
     //简单文本邮件
@@ -49,5 +54,10 @@ public class MailTest {
         mailSender.send(mimeMessage);
     }
 
-
+    @Test
+    public void test_1()
+    {
+        List<FileRecover> list = service.getDeleteFileList("Xiaoming");
+        list.forEach(System.out::println);
+    }
 }

@@ -10,6 +10,7 @@ import com.cooper.demo.service.User.UserServiceImpl;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,6 +33,13 @@ public class StorageController {
     @Autowired
     private UserServiceImpl userService;
 
+    @Value("${ceph.ak}")
+    private  String accessKey;
+    @Value("${ceph.sk}")
+    private  String secretKey;
+    @Value("${ceph.endpoint}")
+    private  String adminEndpoint;
+
     @GetMapping("/user/Storage")
     public String toStoragePage()
     {
@@ -48,7 +56,7 @@ public class StorageController {
         S3client = s3Service.getS3Client(user.getAccess_key(),user.getSecret_key());
         List<Bucket> bucketList = S3client.listBuckets();
 
-        RgwAdmin rgwAdmin = new RgwAdminBuilder().accessKey("98SRU6JLWGSPCLZ9UVR4").secretKey("cMI813ADNAPaSQSw0spbEgv3vIDdilPFsLn5MCFe").endpoint("http://192.168.43.112:1999/admin")
+        RgwAdmin rgwAdmin = new RgwAdminBuilder().accessKey(accessKey).secretKey(secretKey).endpoint(adminEndpoint+"/admin")
                 .build();
 
         //获得用户的总存储容量  需要减去1G,因为这1G是恢复误删用的

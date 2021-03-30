@@ -4,8 +4,8 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.Bucket;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
+import com.cooper.demo.Bean.FileRecover;
 import com.cooper.demo.Bean.MyBucket;
-import com.cooper.demo.Bean.RecoverFile;
 import com.cooper.demo.Bean.UploadObject;
 import com.cooper.demo.Bean.User;
 import com.cooper.demo.service.File.FileService;
@@ -14,13 +14,10 @@ import com.cooper.demo.service.S3.S3ServiceImpl;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
-import org.twonote.rgwadmin4j.RgwAdmin;
-import org.twonote.rgwadmin4j.RgwAdminBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -161,7 +158,7 @@ public class FileController {
         S3client.copyObject(bucketName,fileName,recover,fileName);
 
         //将删除文件的信息插入到对于的Sql中
-        RecoverFile file = new RecoverFile();
+        FileRecover file = new FileRecover();
         file.setUsername(user.getUsername());
         file.setFileName(fileName);
         file.setBucketName(bucketName);
@@ -279,7 +276,7 @@ public class FileController {
     public String download(String bucketName,String fileName)
     {
         //这里的前缀路径需要自己设置好，因为用户隐私安全所以你不可以去访问用户的目录
-        String out_path = "/Users/xuejin/Desktop/S3/download/";
+        String out_path = "/Users/cooper/Desktop/ceph项目/S3/download/";
         downloadPart = new DownloadPart(user.getAccess_key(),user.getSecret_key());
         int fileSize = downloadPart.getSize(user.getAccess_key(),user.getSecret_key(),bucketName,fileName);
         if(fileSize<1*1024*1024)
@@ -367,8 +364,8 @@ public class FileController {
         System.out.println("username  "+user.getUsername());
         JSONArray jsonArray = new JSONArray();
 
-        List<RecoverFile> fileList = fileService.getDeleteFileList(user.getUsername());
-        for(RecoverFile file:fileList)
+        List<FileRecover> fileList = fileService.getDeleteFileList(user.getUsername());
+        for(FileRecover file:fileList)
         {
             jsonArray.add(file.toJson());
         }

@@ -129,14 +129,14 @@
 
 			function createNewFolder() {
 				$.post({
-					url:"http://localhost:8080/user/file/createNewFolder",
+					url:"http://172.23.27.118:8080/user/file/createNewFolder",
 					data:{folderName:$("#key").val()},
 					success:function (result) {
 						if(result)
 						{
 							msgNotify("success","创建成功!");
 							setTimeout(function () {
-								window.location.href="http://localhost:8080/user/file/file_operation";
+								window.location.href="http://172.23.27.118:8080/user/file/file_operation";
 							},500)
 						}
 						else

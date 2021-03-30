@@ -11,6 +11,7 @@ import com.cooper.demo.service.S3.S3Admin;
 import com.cooper.demo.service.S3.S3ServiceImpl;
 import com.cooper.demo.service.User.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,6 +38,13 @@ public class UserCtrl {
 
     @Autowired
     S3ServiceImpl s3Service;
+
+    @Value("${ceph.ak}")
+    private  String accessKey;
+    @Value("${ceph.sk}")
+    private  String secretKey;
+    @Value("${ceph.endpoint}")
+    private  String adminEndpoint;
 
     @RequestMapping("api/checkIsExist_Action")
     public boolean checkIsExist(@RequestParam("username")String username){
@@ -65,10 +73,7 @@ public class UserCtrl {
         user.setMaxStorageNumber(1000);
 
         //每个人创立之初都会分配6空间，其中有1G是用来恢复误删的文件的
-        String accessKey = "98SRU6JLWGSPCLZ9UVR4";
-        String secretKey = "cMI813ADNAPaSQSw0spbEgv3vIDdilPFsLn5MCFe";
-        String adminEndpoint = "http://192.168.43.112:1999/admin";
-        RgwAdmin rgwAdmin = new RgwAdminBuilder().accessKey(accessKey).secretKey(secretKey).endpoint(adminEndpoint)
+        RgwAdmin rgwAdmin = new RgwAdminBuilder().accessKey(accessKey).secretKey(secretKey).endpoint(adminEndpoint+"/admin")
                 .build();
 
         //创建recover区，专门用来恢复用户误删的文件

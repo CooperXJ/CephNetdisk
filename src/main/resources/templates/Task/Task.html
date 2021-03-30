@@ -143,7 +143,7 @@
 			setInterval(getUploadList(),1000);
 			function getUploadList() {
 				$.get({
-					url: "http://localhost:8080/user/file/upload",
+					url: "http://172.23.27.118:8080/user/file/upload",
 					async: true,
 					success: function (result) {
 						var flag = new Array(result.length);
@@ -183,7 +183,7 @@
 			setInterval("getUploadInfoSmall()",500);
 			function getUploadInfoSmall() {
 				$.get({
-					url: "http://localhost:8080/user/Task/upload/small",
+					url: "http://172.23.27.118:8080/user/Task/upload/small",
 					async: true,
 					success: function (result) {
 						var j = 0;
@@ -227,7 +227,7 @@
 			setInterval("getUploadInfoBig()",500);
 			function getUploadInfoBig() {
 				$.get({
-					url: "http://localhost:8080/user/Task/upload/big",
+					url: "http://172.23.27.118:8080/user/Task/upload/big",
 					async: true,
 					success: function (result) {
 						$(result).each(function () {
@@ -262,7 +262,7 @@
 			function downloadProgress() {
 				$.get({
 					async:true,
-					url:"http://localhost:8080/user/Task/download",
+					url:"http://172.23.27.118:8080/user/Task/download",
 					success:function (result) {
 						if(result.progress==-1)
 						{
@@ -298,7 +298,7 @@
 <!--			setInterval("getUploadInfo()",500);-->
 <!--			function getUploadInfo() {-->
 <!--				$.get({-->
-<!--					url: "http://localhost:8080/user/Task/upload/Thread2",-->
+<!--					url: "http://172.23.27.118:8080/user/Task/upload/Thread2",-->
 <!--					async: true,-->
 <!--					success: function (result) {-->
 <!--						if($("#"+result.fileName))-->
@@ -328,7 +328,7 @@
 <!--			setInterval("getUploadInfo()",500);-->
 <!--			function getUploadInfo() {-->
 <!--				$.get({-->
-<!--					url: "http://localhost:8080/user/Task/upload/Thread3",-->
+<!--					url: "http://172.23.27.118:8080/user/Task/upload/Thread3",-->
 <!--					async: true,-->
 <!--					success: function (result) {-->
 <!--						if($("#"+result.fileName))-->
@@ -358,7 +358,7 @@
 <!--			setInterval("getUploadInfo()",500);-->
 <!--			function getUploadInfo() {-->
 <!--				$.get({-->
-<!--					url: "http://localhost:8080/user/Task/upload/Thread4",-->
+<!--					url: "http://172.23.27.118:8080/user/Task/upload/Thread4",-->
 <!--					async: true,-->
 <!--					success: function (result) {-->
 <!--						if($("#"+result.fileName))-->

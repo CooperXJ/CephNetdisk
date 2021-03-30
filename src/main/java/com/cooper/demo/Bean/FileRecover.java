@@ -2,10 +2,26 @@ package com.cooper.demo.Bean;
 
 import net.sf.json.JSONObject;
 
-public class RecoverFile {
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import java.io.Serializable;
+
+@Entity(name = "file_recover")
+@Table(name = "file_recover")
+public class FileRecover implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    @Id
     private String username;
+    @Id
+    @Column(name = "file_name")
     private String fileName;
+    @Id
+    @Column(name = "bucket_name")
     private String bucketName;
+    @Column
     private String ctime;
 
     public String getUsername() {
