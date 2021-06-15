@@ -399,7 +399,6 @@ public class FileController {
 
         fileService.deleteSqlHistory(user.getUsername(),fileName,bucketName);
     }
-
 //    @GetMapping("/download/stop")
 //    public String downloadStop()
 //    {

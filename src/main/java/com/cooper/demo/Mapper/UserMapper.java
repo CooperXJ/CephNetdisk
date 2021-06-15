@@ -1,6 +1,7 @@
 package com.cooper.demo.Mapper;
 
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.cooper.demo.Bean.Friend;
 import com.cooper.demo.Bean.ChatUser;
 import com.cooper.demo.Bean.User;
@@ -11,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 @Mapper
-public interface UserMapper {
+public interface UserMapper extends BaseMapper<User> {
     /**
      * 用户名校验是否存在
      * */

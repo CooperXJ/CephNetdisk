@@ -1,5 +1,6 @@
 package com.cooper.demo.service.Chat;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.cooper.demo.Bean.Friend;
 import com.cooper.demo.Bean.ChatUser;
 import com.cooper.demo.Bean.User;
@@ -19,9 +20,11 @@ public class UserService {
     @Autowired
     UserMapper userMapper;
 
-
+    private final String username_columnName = "username";
     public boolean checkIsExist(String username){
-        return userMapper.checkIsExist(username)!=null;
+        QueryWrapper wrapper = new QueryWrapper();
+        wrapper.eq(username_columnName,username);
+        return userMapper.selectOne(wrapper)!=null;
     }
 
     public void registerUser(Map<String,Object> map){

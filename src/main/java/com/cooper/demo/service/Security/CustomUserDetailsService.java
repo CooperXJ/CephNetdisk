@@ -40,7 +40,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         if(user.getActive_status()==1)//首先对其注册状态进行检测
         {
-            if(user.getUsername().equals("admin"))
+            if(user.getUsername().equals("administrator"))
             {
                 authorities.add(new SimpleGrantedAuthority("ROLE_visitor"));
                 authorities.add(new SimpleGrantedAuthority("ROLE_admin"));//这里必须要加上ROLE

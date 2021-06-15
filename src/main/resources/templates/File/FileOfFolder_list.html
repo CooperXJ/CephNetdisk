@@ -54,7 +54,7 @@
 		<!--topbar-->
 		<div>
 		<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0" th:fragment="topbar">
-			<a class="navbar-brand col-sm-3 col-md-2 mr-0" href="http://172.23.27.118:8080/user/home" style="text-align: center"><h10 sec:authentication="name"/></a>
+			<a class="navbar-brand col-sm-3 col-md-2 mr-0" href="http://localhost:8080/user/home" style="text-align: center"><h10 sec:authentication="name"/></a>
 			<input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search" onblur="search()" id="search">
 			<ul class="navbar-nav px-3">
 				<li class="nav-item text-nowrap">
@@ -241,7 +241,7 @@
 			function download_ajax(bucketName,fileName) {
 				$.post({
 					async:true,
-					url:"http://172.23.27.118:8080/user/file/download",
+					url:"http://localhost:8080/user/file/download",
 					data:{bucketName:bucketName,fileName:fileName},//传送的参数
 					success:function (result) {
 						if(result.toString()=="ok")
@@ -256,13 +256,13 @@
 				var url = location.href;
 				var param = url.lastIndexOf('/')+1;
 				var bucketName = url.substring(param,url.length);
-				$.cookie("bucketName",bucketName, { expires: 1, path: "http://172.23.27.118:8080/user/file/watch/search/test" });
+				$.cookie("bucketName",bucketName, { expires: 1, path: "http://localhost:8080/user/file/watch/search/test" });
 				$.post({
 					async: true,
-					url:"http://172.23.27.118:8080/user/file/watch/search",
+					url:"http://localhost:8080/user/file/watch/search",
 					data:{bucketName:bucketName,prefix:$("#search").val()},
 					success:function (result) {
-						window.location.href = "http://172.23.27.118:8080/user/file/watch/search/result";
+						window.location.href = "http://localhost:8080/user/file/watch/search/result";
 					}
 				});
 			}
@@ -271,7 +271,7 @@
 		<script>
 			function myPreview(bucketName,fileName) {
 				$.post({
-					url:"http://172.23.27.118:8080/user/file/preview",
+					url:"http://localhost:8080/user/file/preview",
 					async:true,
 					data:{bucketName:bucketName,fileName:fileName},
 					success:function (result) {
@@ -285,7 +285,7 @@
 		<script>
 			function copyUrl(bucketName,fileName) {
 				$.post({
-					url:"http://172.23.27.118:8080/user/file/share",
+					url:"http://localhost:8080/user/file/share",
 					async:false,
 					data:{bucketName:bucketName,fileName:fileName},
 					success:function (result) {
@@ -315,7 +315,7 @@
 					title: '上传文件',
 					area: ['370px', '120px'],
 					content: '<div class="layui-input-inline float-left" style="margin-left: 5%;margin-top: 5px">\n' +
-							'<form action="/user/file/upload" method="post" enctype="multipart/form-data" style="padding-top: 10px;">\n'+
+							'<form action="/s3/uploadSingleFile" method="post" enctype="multipart/form-data" style="padding-top: 10px;">\n'+
 								'文件:  <input type="file" name="file" multiple = multiple><br>\n'+
 								'<div style="margin-left: 2%;margin-top: 5px">' +
 								'<input  type="submit" value="上传" class="btn-sm btn-success float-left">' +
@@ -330,7 +330,7 @@
 
 			function cancelUpload() {
 				$.post({
-					url:"http://172.23.27.118:8080/user/file/upload/cancel",
+					url:"http://localhost:8080/user/file/upload/cancel",
 					success:function (result) {
 
 					}

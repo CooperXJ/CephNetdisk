@@ -12,7 +12,7 @@ spring:
   mail:
     host: smtp.qq.com
     username: 1789023580@qq.com
-    password: ycrpdqzvvpbhiacd
+    password: reoaiaspqjfbeddg
     from: 1789023580@qq.com
     properties:
       mail:
@@ -23,6 +23,11 @@ spring:
   mvc:
     date-format: yyyy-MM-dd
 
+  servlet:
+    multipart:
+      max-file-size: 1024MB
+      max-request-size: 2048MB
+
 ceph:
   endpoint: http://172.23.27.119:7480
   ak: U6DVKQNYCPHCIIP0XZFJ
@@ -32,6 +37,21 @@ mybatis:
   type-aliases-package: com.cooper.demo.Mapper
   mapper-locations: classpath:mybatis/mapper/*.xml
 
+mybatis-plus:
+  #注意：一定要对应mapper映射xml文件的所在路径
+  mapper-locations: classpath:/mybatis/mapper/*.xml
+  # 注意：对应实体类的路径//entity扫描的包名
+  type-aliases-package: com.cooper.demo.Bean
+  #  type-handlers-package: com.unnet.netdisk.config.typeHandle # 自定义TypeHandler所在包
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: false
+    call-setters-on-nulls: true
+  global-config:
+    banner: false
+
+
 logging:
   level:
     com.cooper.demo.Mapper: debug
+

@@ -16,7 +16,7 @@ import java.io.File;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class MailTest {
     @Autowired
     JavaMailSenderImpl mailSender;

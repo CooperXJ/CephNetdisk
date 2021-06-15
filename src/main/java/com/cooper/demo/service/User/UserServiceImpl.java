@@ -6,6 +6,7 @@ import com.cooper.demo.service.Mail.MailService;
 import com.cooper.demo.service.User.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -95,8 +96,6 @@ public class UserServiceImpl implements UserService {
 //        System.out.println("addUser"+user);
 //        userMapper.insertUser(user);
 //    }
-
-
 
 
     @Override

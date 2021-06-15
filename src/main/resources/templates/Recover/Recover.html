@@ -91,7 +91,7 @@
 			setInterval("getFiles()",500);
 			function getFiles(){
 				$.post({
-					url:"http://172.23.27.118:8080/user/file/getDeletedFileList",
+					url:"http://localhost:8080/user/file/getDeletedFileList",
 					dataType:'json',
 					success:function (result) {
 						var html = "";
@@ -110,7 +110,7 @@
 
 			function recoverFile(bucketName,fileName) {
 				$.post({
-					url:"http://172.23.27.118:8080/user/file/getDeletedFileList/recover",
+					url:"http://localhost:8080/user/file/getDeletedFileList/recover",
 					data:{bucketName:bucketName,fileName:fileName},
 					success:function (result) {
 						msgNotify("success","恢复成功!")
@@ -126,7 +126,7 @@
 				if(flag)
 				{
 					$.post({
-						url:"http://172.23.27.118:8080/user/file/getDeletedFileList/delete",
+						url:"http://localhost:8080/user/file/getDeletedFileList/delete",
 						data:{bucketName:bucketName,fileName:fileName},
 						success:function (result) {
 							msgNotify("success","删除成功")

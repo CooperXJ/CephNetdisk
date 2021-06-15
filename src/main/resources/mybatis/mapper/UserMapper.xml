@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cooper.demo.Mapper.UserMapper">
     <select id="checkIsExist" resultType="com.cooper.demo.Bean.User">
-        SELECT username FROM user WHERE username=#{username}
+        SELECT * FROM user WHERE username=#{username}
     </select>
     <insert id="registerUser" parameterType="Map">
         INSERT INTO user(username,password,nick_name,ctime) VALUES(#{username},#{password},#{nick_name},#{ctime})

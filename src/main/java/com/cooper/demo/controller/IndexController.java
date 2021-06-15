@@ -12,6 +12,7 @@ import com.cooper.demo.service.S3.S3ServiceImpl;
 import com.cooper.demo.service.User.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.twonote.rgwadmin4j.RgwAdmin;
@@ -98,6 +99,7 @@ public class IndexController {
 
     //注册
     @PostMapping(value = "/register")
+    @Transactional
     public ModelAndView register(@RequestParam("username")String username, @RequestParam("password")String password, @RequestParam("email")String email){
         ModelAndView success = new ModelAndView();
         try{

@@ -1,15 +1,18 @@
 package com.cooper.demo;
 
+import com.amazonaws.AmazonClientException;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.client.builder.AwsClientBuilder;
+import com.amazonaws.event.ProgressEvent;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.Bucket;
-import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.S3ObjectSummary;
+import com.amazonaws.services.s3.model.*;
+import com.amazonaws.services.s3.transfer.TransferManager;
+import com.amazonaws.services.s3.transfer.TransferManagerBuilder;
+import com.amazonaws.services.s3.transfer.Upload;
 import com.cooper.demo.Bean.FileRecover;
 import com.cooper.demo.service.File.FileService;
 import com.cooper.demo.service.S3.S3ServiceImpl;
@@ -439,5 +442,47 @@ public class S3Test {
                 .withPathStyleAccessEnabled(true)
                 .build();
         s3.createBucket("recover-123454231342323");
+    }
+
+    @Test
+    public void listenUploadProgress(){
+        AWSCredentials credentials = new BasicAWSCredentials("U6DVKQNYCPHCIIP0XZFJ", "A32aqcbXEECBtfxL2UqqBoMs2zyJJBMnRpG0gj7i");
+        AmazonS3 s3 = AmazonS3ClientBuilder.standard()
+                .withCredentials(new AWSStaticCredentialsProvider(credentials))
+                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://172.23.27.119:7480",""))
+                .withPathStyleAccessEnabled(true)
+                .build();
+
+        File file = new File("/Users/cooper/Desktop/transporter.zip");
+        TransferManager tm = TransferManagerBuilder.standard().withS3Client(s3).build();
+        // For more advanced uploads, you can create a request object
+        // and supply additional request parameters (ex: progress listeners,
+        // canned ACLs, etc.)
+        PutObjectRequest request = new PutObjectRequest(
+                "Aaa", "upload.zip", file);
+
+        // You can ask the upload for its progress, or you can
+        // add a ProgressListener to your request to receive notifications
+        // when bytes are transferred.
+//        request.setGeneralProgressListener(new com.amazonaws.event.ProgressListener() {
+//            @Override
+//            public void progressChanged(ProgressEvent progressEvent) {
+//                System.out.println("Transferred bytes: " +
+//                        progressEvent.getBytesTransferred());
+//            }
+//        });
+
+        // TransferManager processes all transfers asynchronously,
+        // so this call will return immediately.
+        Upload upload = tm.upload(request);
+        XferMgrProgress.showTransferProgress(upload);
+        XferMgrProgress.waitForCompletion(upload);
+//        try {
+//            // You can block and wait for the upload to finish
+//            upload.waitForCompletion();
+//        } catch (AmazonClientException | InterruptedException amazonClientException) {
+//            System.out.println("Unable to upload file, upload aborted.");
+//            amazonClientException.printStackTrace();
+//        }
     }
 }

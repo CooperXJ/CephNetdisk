@@ -1,5 +1,8 @@
 package com.cooper.demo.Bean;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.ToString;
 
@@ -17,8 +20,10 @@ import java.io.Serializable;
     当你想用套接字在网络上传送对象的时候；
     当你想通过RMI传输对象的时候；
  */
+@TableName(value = "user")
 public class User implements Serializable {
 
+    @TableId
     private Integer id;
     private String username;
     private String nick_name;
@@ -28,24 +33,31 @@ public class User implements Serializable {
     // 激活状态 0 未激活 1 已激活
     private Integer active_status;
     // 激活码
+    @TableField(value = "active_code")
     private String activeCode;
 
     //重置密码时的验证码
+    @TableField(value = "security_code")
     private Integer SecurityCode;
 
     //客户的Access_key
+    @TableField(value = "access_key")
     private String access_key;
 
     //客户的Secret_key
+    @TableField(value = "secret_key")
     private String secret_key;
 
     //客户的存储空间
+    @TableField(value = "storage_space")
     private Integer StorageSpace;
 
     //客户存储的最大数量
+    @TableField(value = "max_storage_number")
     private Integer MaxStorageNumber;
 
     //用户恢复库
+    @TableField(value = "recover_bucket")
     private String recoverBucket;
 
     public Integer getId() {
