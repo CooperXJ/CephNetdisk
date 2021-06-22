@@ -1,93 +1,100 @@
 <!--声明h5标准-->
 <!DOCTYPE html>
 <!-- saved from url=(0052)http://getbootstrap.com/docs/4.0/examples/dashboard/ -->
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<meta name="description" content="">
-		<meta name="author" content="">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="description" content="">
+	<meta name="author" content="">
 
-		<title>文件列表</title>
-		<!-- Bootstrap core CSS -->
-		<link th:href="@{/asserts/css/bootstrap.min.css}" rel="stylesheet">
+	<title>文件列表</title>
+	<!-- Bootstrap core CSS -->
+	<link th:href="@{/asserts/css/bootstrap.min.css}" rel="stylesheet">
 
-		<!-- Custom styles for this template -->
-		<link th:href="@{/asserts/css/dashboard.css}" rel="stylesheet">
+	<!-- Custom styles for this template -->
+	<link th:href="@{/asserts/css/dashboard.css}" rel="stylesheet">
 
-		<link th:href="@{/webjars/jquery/3.4.1/jquery.js}" rel="stylesheet">
+	<link th:href="@{/webjars/jquery/3.4.1/jquery.js}" rel="stylesheet">
 
-		<style type="text/css">
-			/* Chart.js */
-			
-			@-webkit-keyframes chartjs-render-animation {
-				from {
-					opacity: 0.99
-				}
-				to {
-					opacity: 1
-				}
+	<style type="text/css">
+		/* Chart.js */
+
+		@-webkit-keyframes chartjs-render-animation {
+			from {
+				opacity: 0.99
 			}
-			
-			@keyframes chartjs-render-animation {
-				from {
-					opacity: 0.99
-				}
-				to {
-					opacity: 1
-				}
-			}
-			
-			.chartjs-render-monitor {
-				-webkit-animation: chartjs-render-animation 0.001s;
-				animation: chartjs-render-animation 0.001s;
-			}
-		</style>
-	</head>
 
-	<body>
-<!--		引入抽取的topbar-->
-<!--	模板名会使用thymeleaf的前后缀进行解析-->
-<!--		<div th:replace="commons/bar::topbar"></div>-->
-		<!--topbar-->
-		<div>
+			to {
+				opacity: 1
+			}
+		}
+
+		@keyframes chartjs-render-animation {
+			from {
+				opacity: 0.99
+			}
+
+			to {
+				opacity: 1
+			}
+		}
+
+		.chartjs-render-monitor {
+			-webkit-animation: chartjs-render-animation 0.001s;
+			animation: chartjs-render-animation 0.001s;
+		}
+	</style>
+</head>
+
+<body>
+	<!--		引入抽取的topbar-->
+	<!--	模板名会使用thymeleaf的前后缀进行解析-->
+	<!--		<div th:replace="commons/bar::topbar"></div>-->
+	<!--topbar-->
+	<div>
 		<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0" th:fragment="topbar">
-			<a class="navbar-brand col-sm-3 col-md-2 mr-0" href="http://localhost:8080/user/home" style="text-align: center"><h10 sec:authentication="name"/></a>
-			<input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search" onblur="search()" id="search">
+			<a class="navbar-brand col-sm-3 col-md-2 mr-0" href="http://localhost:8080/user/home"
+				style="text-align: center">
+				<h10 sec:authentication="name" /></a>
+			<input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search"
+				onblur="search()" id="search">
 			<ul class="navbar-nav px-3">
 				<li class="nav-item text-nowrap">
 					<a class="nav-link" th:href="@{/logout}">Sign out</a>
 				</li>
 			</ul>
 		</nav>
-		</div>
+	</div>
 
-		<div class="container-fluid">
-			<div class="row">
+	<div class="container-fluid">
+		<div class="row">
 
-<!--				引入侧边栏-->
-				<div th:replace="commons/bar::#sidebar(activeUri='/user/file/file_operation')"></div>
+			<!--				引入侧边栏-->
+			<div th:replace="commons/bar::#sidebar(activeUri='/user/file/file_operation')"></div>
 
-				<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
-<!--					<h2><button onclick="upload()" class="btn btn-sm btn-success">上传文件</button></h2>-->
-					<h2><button id="uploadFile" class="btn btn-sm btn-success">上传文件</button></h2>
-
-					<div class="table-responsive">
-						<table class="table table-striped table-sm">
-							<thead>
-								<tr>
-									<th>文件名</th>
-									<th>大小</th>
-									<th>修改日期</th>
-									<th>操作</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr th:each="file:${File_Info}">
-									<td th:text="${file.getKey()}"></td>
-									<td th:text="${(file.getSize()/1024.0)>1024.0}? ${#numbers.formatDecimal((file.getSize()/1024.0/1024.0), 0, 2)}+'M':${#numbers.formatDecimal((file.getSize()/1024.0), 0, 2)}+'KB'"></td>
+			<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+				<span><button id="downloadFile" class="btn btn-sm btn-success">下载文件</button></span>
+				<span><button id="uploadFile" class="btn btn-sm btn-success">上传文件</button></span>
+				<br /><br />
+				<div class="table-responsive">
+					<table class="table table-striped table-sm">
+						<thead>
+							<tr>
+								<th>勾选下载</th>
+								<th>文件名</th>
+								<th>大小</th>
+								<th>修改日期</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="file:${File_Info}">
+								<!-- 单选框 -->
+								<td><input type="checkbox" name="dFileName"></td>
+								<td th:text="${file.getKey()}"></td>
+								<td th:text="${(file.getSize()/1024.0)>1024.0}? ${#numbers.formatDecimal((file.getSize()/1024.0/1024.0), 0, 2)}+'M':${#numbers.formatDecimal((file.getSize()/1024.0), 0, 2)}+'KB'"></td>
 									<td th:text="${file.getLastModified().getYear()+1900}+@{-}+${file.getLastModified().getMonth()+1}+@{-}+${file.getLastModified().getDate()}"></td>
 									<td>
 										<button class="btn btn-sm btn-success" th:onclick="myPreview([[${file.getBucketName()}]],[[${file.getKey()}]])">预览</button>
@@ -202,16 +209,16 @@
 			function uploadsc() {
 				document.getElementById("upload").style.display = "none";
 			}
-			function delesc(){
+			function delesc() {
 				/* 隐藏 */
-				document.getElementById("delete").style.display="none";
+				document.getElementById("delete").style.display = "none";
 			}
 			function myDownload() {
-				$("#downloadForm").attr("action",$(".downloadBtn").attr("downloadUri")).submit();
+				$("#downloadForm").attr("action", $(".downloadBtn").attr("downloadUri")).submit();
 				return false;
 			}
 			function getMyFlag() {
-				$("#deleteBucketForm").attr("action",$(".deleteBtn").attr("deleteUri")).submit();
+				$("#deleteBucketForm").attr("action", $(".deleteBtn").attr("deleteUri")).submit();
 				alert($(".deleteBtn").attr("deleteUri"));
 				return false;
 			}
@@ -231,20 +238,20 @@
 				//alert("这里是.deletebtn");
 				//document.getElementById("delete_box").style.display="block";
 				//var flag = $(".confirm_delete").attr("myFlag");
-				if(flag)
-					$("#deleteBucketForm").attr("action",$(this).attr("deleteUri")).submit();
+				if (flag)
+					$("#deleteBucketForm").attr("action", $(this).attr("deleteUri")).submit();
 				return false;
 			});
 		</script>
 
 		<script>
-			function download_ajax(bucketName,fileName) {
+			function download_ajax(bucketName, fileName) {
 				$.post({
-					async:true,
-					url:"http://localhost:8080/user/file/download",
-					data:{bucketName:bucketName,fileName:fileName},//传送的参数
-					success:function (result) {
-						if(result.toString()=="ok")
+					async: true,
+					url: "http://localhost:8080/user/file/download",
+					data: { bucketName: bucketName, fileName: fileName },//传送的参数
+					success: function (result) {
+						if (result.toString() == "ok")
 							console.log("下载成功！");
 					}
 				});
@@ -254,14 +261,14 @@
 		<script>
 			function search() {
 				var url = location.href;
-				var param = url.lastIndexOf('/')+1;
-				var bucketName = url.substring(param,url.length);
-				$.cookie("bucketName",bucketName, { expires: 1, path: "http://localhost:8080/user/file/watch/search/test" });
+				var param = url.lastIndexOf('/') + 1;
+				var bucketName = url.substring(param, url.length);
+				$.cookie("bucketName", bucketName, { expires: 1, path: "http://localhost:8080/user/file/watch/search/test" });
 				$.post({
 					async: true,
-					url:"http://localhost:8080/user/file/watch/search",
-					data:{bucketName:bucketName,prefix:$("#search").val()},
-					success:function (result) {
+					url: "http://localhost:8080/user/file/watch/search",
+					data: { bucketName: bucketName, prefix: $("#search").val() },
+					success: function (result) {
 						window.location.href = "http://localhost:8080/user/file/watch/search/result";
 					}
 				});
@@ -269,12 +276,12 @@
 		</script>
 
 		<script>
-			function myPreview(bucketName,fileName) {
+			function myPreview(bucketName, fileName) {
 				$.post({
-					url:"http://localhost:8080/user/file/preview",
-					async:true,
-					data:{bucketName:bucketName,fileName:fileName},
-					success:function (result) {
+					url: "http://localhost:8080/user/file/preview",
+					async: true,
+					data: { bucketName: bucketName, fileName: fileName },
+					success: function (result) {
 						PDFObject.embed(result);
 					}
 				})
@@ -283,18 +290,18 @@
 
 		<!--分享链接粘贴  此处有一个小bug  第一次赋值的时候需要点击两次 以后再次点击正常-->
 		<script>
-			function copyUrl(bucketName,fileName) {
+			function copyUrl(bucketName, fileName) {
 				$.post({
-					url:"http://localhost:8080/user/file/share",
-					async:false,
-					data:{bucketName:bucketName,fileName:fileName},
-					success:function (result) {
+					url: "http://localhost:8080/user/file/share",
+					async: false,
+					data: { bucketName: bucketName, fileName: fileName },
+					success: function (result) {
 						//这里之所以要前面+'t' 是因为无法识别以数字开头的id
-						var target = document.getElementById('t'+fileName);
-						target.setAttribute("data-clipboard-text",result);
+						var target = document.getElementById('t' + fileName);
+						target.setAttribute("data-clipboard-text", result);
 
 						var clipboard = new ClipboardJS(target);
-						clipboard.on('success',function (e) {
+						clipboard.on('success', function (e) {
 							alert("复制成功");
 							clipboard.destroy();
 						});
@@ -315,27 +322,76 @@
 					title: '上传文件',
 					area: ['370px', '120px'],
 					content: '<div class="layui-input-inline float-left" style="margin-left: 5%;margin-top: 5px">\n' +
-							'<form action="/s3/uploadSingleFile" method="post" enctype="multipart/form-data" style="padding-top: 10px;">\n'+
-								'文件:  <input type="file" name="file" multiple = multiple><br>\n'+
-								'<div style="margin-left: 2%;margin-top: 5px">' +
-								'<input  type="submit" value="上传" class="btn-sm btn-success float-left">' +
-								'</div>'+
-							' </form>\n'+
-							'<div class = "float-right">'+
-								'<button class="btn-sm btn-danger" onclick="cancelUpload()">取消</button>'+
-							'</div>'+
-							'</div>'
+						'<form id="uploadForm" action="/s3/upload" method="post" enctype="multipart/form-data" style="padding-top: 10px;">\n' +
+						'文件:  <input type="file" name="file" id="fileId" multiple = multiple><br>\n' +
+						'<div style="margin-left: 2%;margin-top: 5px">' +
+						'<input  type="submit" value="上传" id="layerUpload" class="btn-sm btn-success float-left">' +
+						//'<input  type="button" value="上传" onclick="uploadFiles()" class="btn-sm btn-success float-left">' +
+						'</div>' +
+						' </form>\n' +
+						'<div class = "float-right">' +
+						'<button class="btn-sm btn-danger" id="cancel" onclick="cancelUpload()">取消</button>' +
+						'</div>' +
+						'</div>',
+					cancel: function (index, layero) {
+						layer.close(index);
+					}
+
 				});
+
 			});
 
 			function cancelUpload() {
-				$.post({
-					url:"http://localhost:8080/user/file/upload/cancel",
-					success:function (result) {
+				layer.closeAll();
+			}
+			function uploadFiles() {
+				//获取进度条数据
+				// $.ajax({
+				// 	url: '/s3/upload',
+				// 	type: 'post',
+				// 	data: {
+				// 		file: $("#fileId").val(),
+				// 	},
+				// 	success: function (data) {
+				// 		console.log(data);
+				// 	}, error: function (data) {
+				// 		console.log(data);
+				// 	}
+				// });
+
+				//$("#uploadForm").submit();
+				//console.log(`${multipartFile}`);
+			}
+
+			$(function () {
+				//"下载文件"按钮绑定点击事件
+				var uploadRows = "";
+				$("#downloadFile").click(function () {
+					//获取选中的文件名
+					$("input[name='dFileName']").each(function () {
+						if ($(this).is(':checked')) {
+							// uploadRows.push($(this).parent().next().text());
+							uploadRows+=$(this).parent().next().text()+",";
+						}
+					});
+
+					//如果没有选中，提醒先选中然后再来下载
+					if (uploadRows == "") {
+						layui.use('layer', function () {
+							var layer = layui.layer;
+							layer.alert('请先选中文件', { icon: 1 });
+						});
+					} else {
+						$.ajax({
+							url:"/s3/download",
+							type:'post',
+							data: { files: uploadRows, downloadPath: "/Users/cooper/Desktop/S3Test/download/" },
+						});
 
 					}
-				})
-			}
+				});
+			})
+
 		</script>
 	</body>
 

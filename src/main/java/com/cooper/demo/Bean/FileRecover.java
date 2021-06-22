@@ -1,5 +1,7 @@
 package com.cooper.demo.Bean;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 import net.sf.json.JSONObject;
 
 import javax.persistence.Column;
@@ -10,6 +12,7 @@ import java.io.Serializable;
 
 @Entity(name = "file_recover")
 @Table(name = "file_recover")
+@TableName(value = "file_recover")
 public class FileRecover implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -17,9 +20,11 @@ public class FileRecover implements Serializable {
     private String username;
     @Id
     @Column(name = "file_name")
+    @TableField(value = "file_name")
     private String fileName;
     @Id
     @Column(name = "bucket_name")
+    @TableField(value = "bucket_name")
     private String bucketName;
     @Column
     private String ctime;

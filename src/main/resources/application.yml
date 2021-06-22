@@ -32,6 +32,7 @@ ceph:
   endpoint: http://172.23.27.119:7480
   ak: U6DVKQNYCPHCIIP0XZFJ
   sk: A32aqcbXEECBtfxL2UqqBoMs2zyJJBMnRpG0gj7i
+  picBucket: PublicPicture
 
 mybatis:
   type-aliases-package: com.cooper.demo.Mapper

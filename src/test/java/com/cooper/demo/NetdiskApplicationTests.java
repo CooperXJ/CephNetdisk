@@ -1,5 +1,11 @@
 package com.cooper.demo;
 
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.client.builder.AwsClientBuilder;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.cooper.demo.Bean.User;
 import com.cooper.demo.Mapper.UserMapper;
@@ -7,6 +13,7 @@ import com.cooper.demo.service.Chat.UserService;
 import com.cooper.demo.service.User.UserServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -30,6 +37,17 @@ class NetdiskApplicationTests {
     @Autowired
     private UserMapper userMapper;
 
+    @Value("${ceph.endpoint}")
+    private String endpoint;
+
+    @Value("${ceph.ak}")
+    private String ak;
+
+    @Value("${ceph.sk}")
+    private String sk;
+
+    @Value("${ceph.picBucket}")
+    private String picBucket;
 
     @Test
     void contextLoads() {
@@ -73,4 +91,14 @@ class NetdiskApplicationTests {
          System.out.println(user.toString());
      }
 
+     @Test
+    void makeBucketPublic(){
+         AWSCredentials credentials = new BasicAWSCredentials(ak,sk);
+         AmazonS3 s3 = AmazonS3ClientBuilder.standard()
+                 .withCredentials(new AWSStaticCredentialsProvider(credentials))
+                 .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endpoint,""))
+                 .withPathStyleAccessEnabled(true)
+                 .build();
+
+     }
 }

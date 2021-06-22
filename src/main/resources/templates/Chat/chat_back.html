@@ -35,7 +35,7 @@
 <!--				引入侧边栏-->
 				<div th:replace="commons/bar::#sidebar(activeUri='/user/chat')"></div>
 
-				<main role="main" class="col-md-9 ml-sm-auto pt-3 px-4">
+				<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
 
 					<div class="container" style="width: 3000px;height: 650px">
 
@@ -384,7 +384,7 @@
 					'</div></div>'
 		}
 		if (o.length === 0) {
-			html += '<img src="staticfiles/nodata.png" style="margin-left: 19%">'
+			html += '<img src="/others/nodata.png" style="margin-left: 19%">'
 		}
 		layer.open({
 			type: 1,
@@ -397,8 +397,8 @@
 
 	function acceptAction(t) {
 		$.ajax({
-			url: '/s3/upload',
-			type: 'get',
+			url: '/api/acceptFriend_action',
+			type: 'post',
 			data: {
 				user_id: u['username'],
 				friend_id: t,
@@ -459,7 +459,7 @@
 			success: function (data) {
 				$('#userList').empty();
 				if (data.length === 0) {
-					$('#userList').append('<img src="/staticfiles/nodata.png" style="margin-left: 25%">');
+					$('#userList').append('<img src="/others/nodata.png" style="margin-left: 25%">');
 					return;
 				}
 				for (var i = 0; i < data.length; i++) {
@@ -500,6 +500,8 @@
 		$('.chat-history ul').append(getMsgHtml({content: content, ctime: ctime}, 0));
 		$('#friend-id-' + l['friend_id'] + " .msg").html(content.substring(0, 8) + '...');
 		scrollTo($('.chat-history'));//滑到最底部
+
+		//发送消息
 		ws.send(JSON.stringify({    //实时推送信息
 			targetID: "send",
 			sender_id: u['username'],
@@ -573,6 +575,7 @@
 			data: file,
 
 			success: function () {
+				console.log(file.name)
 				$('.Input_text .showImg').attr("src", "http://172.23.27.119:7480/PublicPicture/"+file.get("img").name);//替换地址
 				postAction();
 				$('.Input_text').html("")

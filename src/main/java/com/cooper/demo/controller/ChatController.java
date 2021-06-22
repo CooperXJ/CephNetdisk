@@ -11,7 +11,7 @@ public class ChatController {
     @GetMapping("/chat")
     public String toChatPage()
     {
-        return "Chat/chat";
+        return "chat_back";
     }
 
 }

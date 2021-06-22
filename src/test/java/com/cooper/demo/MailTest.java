@@ -1,6 +1,8 @@
 package com.cooper.demo;
 
 import com.cooper.demo.Bean.FileRecover;
+import com.cooper.demo.Bean.Friend;
+import com.cooper.demo.service.Chat.UserService;
 import com.cooper.demo.service.File.FileService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +26,9 @@ public class MailTest {
     @Autowired
     FileService service;
     //以下使用两种不同的方法测试邮件的发送
+
+    @Autowired
+    private UserService userService;
 
     //简单文本邮件
     @Test
@@ -59,5 +64,11 @@ public class MailTest {
     {
         List<FileRecover> list = service.getDeleteFileList("Xiaoming");
         list.forEach(System.out::println);
+    }
+
+    @Test
+    public void test_2(){
+        List<Friend> administrator = userService.getApplyFriend("administrator");
+        System.out.println(administrator);
     }
 }

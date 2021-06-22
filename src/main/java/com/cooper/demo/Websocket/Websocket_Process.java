@@ -35,24 +35,24 @@ public class Websocket_Process {
         sessionServer.put("process", session);
 
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        HttpSession s = request.getSession();
+//        HttpSession s = request.getSession();
 
         JSONObject j = new JSONObject();
 
         j.put("targetID", "onopen");
 
         //将待上传的文件名取出并传递给WebSocket
-        List<String> list = (List<String>) s.getAttribute("uploadList");
-        String arr[][];
-        for(String str:list)
-        {
-            j.put("uploadList",s);
-        }
+//        List<String> list = (List<String>) s.getAttribute("uploadList");
+//        String arr[][];
+//        for(String str:list)
+//        {
+//            j.put("uploadList",s);
+//        }
 
+        //将每一个会话存起来
         for (String key : sessionServer.keySet()) {
             sessionServer.get(key).getAsyncRemote().sendText(j.toString());
         }
-
     }
 
 

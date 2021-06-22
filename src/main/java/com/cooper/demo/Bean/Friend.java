@@ -10,7 +10,7 @@ public class Friend {
     private String friend_header_img;
     private String ctime;
     private String reason;
-    private Integer isaccept;
+    private Integer is_accept;
 
     public String getReason() {
         return reason;
@@ -79,11 +79,11 @@ public class Friend {
     }
 
     public Integer getIsaccept() {
-        return isaccept;
+        return is_accept;
     }
 
     public void setIsaccept(Integer isaccept) {
-        this.isaccept = isaccept;
+        this.is_accept = isaccept;
     }
 
     public Integer getNotread_num() {

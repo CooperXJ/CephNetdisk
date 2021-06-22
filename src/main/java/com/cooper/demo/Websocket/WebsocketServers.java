@@ -77,6 +77,7 @@ public class WebsocketServers {
         error.printStackTrace();
     }
 
+    //检测线上人数，也就是有没有上线，那个绿色小点
     @Scheduled(fixedRate = 3000)
     public void pushStatus() {
         JSONObject j = new JSONObject();
