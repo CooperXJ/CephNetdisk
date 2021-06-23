@@ -6,12 +6,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/user")
-
 public class ChatController {
     @GetMapping("/chat")
     public String toChatPage()
     {
-        return "chat_back";
+        return "Chat/chat_back";
     }
 
 }
